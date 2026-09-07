@@ -1,6 +1,6 @@
-// Public client configuration only. The Supabase anon key is designed for browser use with RLS enabled.
-// Populate these two values from the connected Supabase project. Never place a service-role key here.
+// Public client configuration only. The Supabase publishable/anon key is designed for browser use with RLS enabled.
+// Never place a service-role or secret key here.
 window.RAINBOW_CONFIG=window.RAINBOW_CONFIG||{
-  supabaseUrl:'',
-  supabaseAnonKey:''
+  supabaseUrl:'https://okzmrlrijovbuatjcgqi.supabase.co',
+  supabaseAnonKey:'sb_publishable_2rp84hm1GThThM-V5-s4jA_3Z_090ne'
 };
