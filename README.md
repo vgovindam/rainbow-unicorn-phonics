@@ -1,25 +1,23 @@
-# Rainbow Magic Phonics Adventure
+# Rainbow Magic Learning Adventure
 
-A standalone mobile-first phonics web app for a 5-year-old who already knows uppercase/lowercase letters, numbers, and rhyming.
+A mobile-first, parent-guided educational web app for a 5-year-old learner. It began as a phonics app and now includes a mastery-based whole-child learning system while keeping foundational literacy and mathematics as the highest priorities.
 
-## Design goals
-- Parent-guided instruction with a separate child-facing play area
-- Unicorn/rainbow theme plus an original storybook-princess/castle theme
-- Structured phonics: sounds → phonemic awareness → blending/segmenting → CVC decoding/encoding → short vowels → digraphs → blends → heart words → sentences → decodable stories
-- 5–10 minute interactive baseline (33 points)
-- Day 1 parent scripts and mastery guidance
-- Three kid mini-games: Feed the Unicorn, Princess Sound Gems, Rainbow Blend Bridge
-- Progress tracker and reward map
-- Data stored only in the browser via localStorage
-- PWA/service worker for Add to Home Screen and offline use after first visit
+## Educational model
 
-## Child safety / privacy
-No login, analytics, ads, external trackers, chat, camera, microphone, or child data upload. The experience is designed for adult supervision.
+- 15–25 minute sessions with short 2–7 minute activities
+- literacy + mathematics in the daily core
+- rotating language, logic, science, memory, executive-function, social-emotional, practical-life, creativity, motor and general-knowledge activities
+- every activity includes a learning objective, target skill, educational reason, materials, parent coaching, observable success criterion and optional extension
+- adaptive skill states: Not Introduced, Introduced, Learning, Developing, Mostly Mastered, Mastered, Review Needed
+- mastery requires repeated evidence rather than one successful attempt
+- constructive scaffolding and gradual difficulty changes
+- reading baseline for letter sounds, vowels, phonemic awareness, blending, segmenting and CVC decoding
+- local-only progress storage; no account, ads, microphone, camera, or child-data upload
 
-## Copyright note
-The princess mode uses original/generic storybook-princess and castle styling. It does not include Disney logos, Disney artwork, or named Disney characters.
+## Themes
 
-## GitHub Pages
-Serve the repository root from the `main` branch. The expected site URL is:
+Original motivational themes include Rainbow Unicorn Kingdom, Ice Princess Castle, Mermaid Ocean Adventure, Enchanted Library, Tower Princess Adventure, Fairy Garden, Dragon Rescue and Space Princess. The public project intentionally avoids official Disney artwork/branding.
 
-`https://vgovindam.github.io/rainbow-unicorn-phonics/`
+## Hosting
+
+Static PWA hosted with GitHub Pages. All core files are in the repository root.
