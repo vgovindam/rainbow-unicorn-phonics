@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#9b5de5" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Magic Phonics" />
+<title>Rainbow Unicorn Phonics Adventure</title>
+<link rel="manifest" href="./manifest.json" />
+<link rel="stylesheet" href="./styles.css" />
+
+</head>
+<body data-theme="unicorn">
+<main class="shell">
+<section class="hero glass">
+  <div class="hero-content">
+    <div class="row"><span class="eyebrow">👨‍👩‍👧 Adult-guided · Age 5</span><div class="theme-switch"><button id="unicornTheme" class="active" onclick="setTheme('unicorn')">🦄 Unicorn</button><button id="princessTheme" onclick="setTheme('princess')">👑 Princess Castle</button></div></div>
+    <h1><span class="rainbow">Rainbow Magic</span><br/>Phonics Adventure</h1>
+    <p>Short, movement-friendly phonics lessons that turn sounds into real reading. Parents guide instruction; kids get the magical games, rewards, and adventures.</p>
+    <div class="row"><button class="btn primary" onclick="go('baseline')">Start Baseline ✨</button><button class="btn mint" onclick="go('play')">Kid Play 🎮</button><button class="btn soft" onclick="go('lesson')">Day 1 🦄</button></div>
+  </div>
+  <div class="hero-art" id="heroArt">🦄</div>
+</section>
+
+<div class="stats"><div class="stat"><b id="baseStat">0/33</b><span>Baseline</span></div><div class="stat"><b id="rewardStat">0</b><span>Magic rewards</span></div><div class="stat"><b id="lessonStat">0%</b><span>Day 1</span></div><div class="stat"><b id="stageStat">Start</b><span>Recommended stage</span></div></div>
+
+<nav class="nav"><button data-go="home" class="active">🏠 Home</button><button data-go="baseline">🔎 Baseline</button><button data-go="play">🎮 Kid Play</button><button data-go="lesson">📚 Lesson</button><button data-go="parent">🧑 Parent</button><button data-go="rewards">🌟 Rewards</button></nav>
+
+<section id="home" class="view active">
+<div class="section-title"><h2>How this works</h2><p>Parent teaches. Child plays. Mastery decides what comes next.</p></div>
+<div class="grid">
+  <div class="card"><span class="badge adult">🧑 Adult Zone</span><h3>1. Find the real starting point</h3><p>She already knows uppercase, lowercase, numbers, and rhyming. The baseline checks <b>letter sounds, short vowels, beginning/ending sounds, oral blending, oral segmenting, and CVC decoding</b>.</p><div class="tip warn">Do not assume knowing a letter name means knowing its sound automatically.</div></div>
+  <div class="card"><span class="badge kid">✨ Kid Zone</span><h3>2. Learn through play</h3><p>Activities use treasure hunts, movement, magical characters, rainbow gems, princess castles, sound sorting, blending, and word building—without turning the session into a worksheet marathon.</p></div>
+</div>
+<div class="section-title"><h2>Reading journey</h2><p>Approximate sequence; not a rigid calendar.</p></div>
+<div class="card"><div class="path"><div>🔤 Letter sounds</div><div>👂 Sound awareness</div><div>🧩 Oral blending</div><div>👏 Segmenting</div><div>📖 CVC reading</div><div>✏️ CVC spelling</div><div>🍎 Short vowels</div><div>🤝 Digraphs</div><div>🚂 Blends</div><div>💖 Heart words</div><div>💬 Sentences</div><div>📚 Decodable stories</div><div>⚡ Fluency</div><div>🌟 Independence</div></div></div>
+<div class="section-title"><h2>Week 1 objective</h2><p>Adjusted after the baseline.</p></div>
+<div class="grid"><div class="card"><h3>Sound foundation</h3><div class="checkline">👂 <span>Automatically produce a small set of consonant sounds.</span></div><div class="checkline">🍎 <span>Use short <b>a</b> and <b>i</b>.</span></div><div class="checkline">🔎 <span>Identify first sounds in spoken words.</span></div></div><div class="card"><h3>Early word skills</h3><div class="checkline">🧩 <span>Blend 2–3 spoken phonemes.</span></div><div class="checkline">👏 <span>Segment simple spoken words.</span></div><div class="checkline">📖 <span>Connect sounds to written CVC words only when ready.</span></div></div></div>
+</section>
+
+<section id="baseline" class="view">
+<div class="section-title"><h2>🔎 Luna's Baseline Adventure</h2><p><span class="badge adult">Adult-guided</span> 5–10 minutes</p></div>
+<div class="card"><h3>Parent script</h3><div class="say">“Luna the Unicorn lost some rainbow crystals! She needs a Sound Detective. Every sound challenge helps Luna get a crystal back. Want to help?”</div><p class="muted">Give about 3 seconds per answer. Do not teach during the baseline. If she does not know one, say: “That's okay. Let's try another one.”</p></div>
+<div id="assessment"></div>
+<div class="score-panel"><div class="score-top"><div><div class="score-big"><span id="scoreNow">0</span> / 33</div><div class="recommend" id="recommendation">Complete the sections to find the best starting point.</div></div><button class="btn sm" onclick="resetBaseline()">Reset</button></div><div class="bar"><i id="scoreBar"></i></div></div>
+</section>
+
+<section id="play" class="view">
+<div class="section-title"><h2>🎮 Kid Play</h2><p><span class="badge kid">Child-facing</span> Parent reads prompts when needed</p></div>
+<div id="activityMenu" class="activity-grid">
+  <button class="activity" onclick="startGame('feed')"><span class="big">🦄</span><b>Feed the Unicorn</b><p>Choose the words that start with Luna's magic sound.</p></button>
+  <button class="activity" onclick="startGame('gems')"><span class="big">💎</span><b>Princess Sound Gems</b><p>Help the castle collect the correct beginning-sound gems.</p></button>
+  <button class="activity" onclick="startGame('blend')"><span class="big">🌈</span><b>Rainbow Blend Bridge</b><p>Listen to the parent say the sounds, then tap the whole word.</p></button>
+</div>
+<div id="gameArea" class="card game"></div>
+</section>
+
+<section id="lesson" class="view">
+<div class="section-title"><h2>📚 Day 1 — Missing Rainbow Sounds</h2><p><span class="badge adult">Adult-guided</span> 15–20 minutes</p></div>
+<div class="card"><div class="kicker">Today's skill</div><h3>/m/, /s/, /t/, /p/, short /a/</h3><p>Hear and produce the sounds, identify beginning sounds, and begin oral blending.</p><div class="sound-row"><span class="sound">m</span><span class="sound">s</span><span class="sound">t</span><span class="sound">p</span><span class="sound">a</span></div><div class="tip" style="margin-top:12px"><b>Pure sound reminder:</b> /mmmm/ not “muh”; /ssss/ not “suh”; keep /t/ and /p/ quick.</div></div>
+<div id="lessonSteps"></div>
+<div class="card"><div class="kicker">Parent observation</div><h3>Record what you actually saw</h3><div class="tracker-row"><b>m, s, t, p, a</b><select class="status-select observe" data-key="sounds"><option>Not rated</option><option>Mastered</option><option>Developing</option><option>Needs more practice</option></select></div><div class="tracker-row"><b>Beginning sounds</b><select class="status-select observe" data-key="begin"><option>Not rated</option><option>Mastered</option><option>Developing</option><option>Needs more practice</option></select></div><div class="tracker-row"><b>Oral blending</b><select class="status-select observe" data-key="blend"><option>Not rated</option><option>Mastered</option><option>Developing</option><option>Needs more practice</option></select></div><label><b>Notes</b><textarea id="notes" class="notes" placeholder="Example: m/s easy, t confused, loved jumping, needed help with mat..."></textarea></label></div>
+</section>
+
+<section id="parent" class="view">
+<div class="section-title"><h2>🧑 Parent Dashboard</h2><p>Private to this browser</p></div>
+<div class="grid"><div class="card"><h3>Recommended next focus</h3><div id="nextFocus" class="say"></div><p class="muted">The app uses the baseline and Day 1 observations for a simple rule-based recommendation. It does not send child data to a server.</p></div><div class="card"><h3>Mastery rule</h3><p><b>Letter sound:</b> about 4/5 without long hesitation.<br><b>Blending:</b> several 2–3 phoneme combinations with little prompting.<br><b>Segmenting:</b> most phonemes in simple CVC words.<br><b>CVC reading:</b> about 4/5 taught-pattern words without picture guessing.</p></div></div>
+<div class="section-title"><h2>Skill tracker</h2><p>Update after lessons, not after every tiny activity.</p></div><div class="card"><div id="tracker"></div></div>
+<div class="section-title"><h2>Baseline breakdown</h2><p>Individual skills matter more than the total.</p></div><div id="breakdown" class="mini-grid"></div>
+<div class="section-title"><h2>Simple home materials</h2><p>Household alternatives are fine.</p></div><div class="card"><div class="material-grid"><div class="material">🗂️ Index cards / cut paper</div><div class="material">🖍️ Crayons & markers</div><div class="material">✂️ Scissors & glue</div><div class="material">🧲 Magnetic letters or paper tiles</div><div class="material">🧱 Blocks / counters / coins</div><div class="material">🧸 Small toys</div><div class="material">🟣 Play-Doh</div><div class="material">⭐ Stickers</div><div class="material">🥣 Bowls / cups for sorting</div></div></div>
+</section>
+
+<section id="rewards" class="view">
+<div class="section-title"><h2>🌟 Rainbow Reward Map</h2><p>Tap a badge when she earns it.</p></div><div class="card"><div id="rewardGrid" class="reward-grid"></div></div>
+<div class="grid" style="margin-top:13px"><div class="card"><h3>Praise effort</h3><div class="say">“You listened carefully to every sound.”</div><div class="say">“You kept trying when the sound puzzle was tricky.”</div><div class="say">“You fixed that by listening again.”</div></div><div class="card"><h3>Error correction</h3><div class="say">“Let's listen again.”</div><div class="say">“Almost! Stretch the sounds with me.”</div><div class="say">“Point to each sound while we say it.”</div></div></div>
+</section>
+
+<div class="footer">🌈 Parent-guided phonics · No login · No child data uploaded · Offline after first visit</div>
+</main>
+
+<nav class="bottom"><button data-go="home" class="active"><span>🏠</span>Home</button><button data-go="baseline"><span>🔎</span>Baseline</button><button data-go="play"><span>🎮</span>Play</button><button data-go="lesson"><span>📚</span>Lesson</button><button data-go="parent"><span>🧑</span>Parent</button><button data-go="rewards"><span>🌟</span>Rewards</button></nav>
+<div class="toast" id="toast">Saved ✨</div>
+<script src="./app.js"></script>
+
+</body>
+</html>
