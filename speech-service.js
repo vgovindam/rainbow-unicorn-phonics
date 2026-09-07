@@ -14,7 +14,7 @@ const phonemeFallback={
   t:'t',p:'p',k:'k',b:'b',d:'d',g:'g',
   a:'aaa, as in apple',i:'ih, as in insect',o:'ah, as in octopus',e:'eh, as in egg',u:'uh, as in umbrella'
 };
-function stopSpeech(){try{speechSynthesis.cancel();}catch(_){} current=null;}
+function stopSpeech(){try{speechSynthesis.cancel();}catch(_){} if(current instanceof Audio){try{current.pause();current.currentTime=0;}catch(_){}} current=null;}
 function browserSpeak(text,profile='sakhi'){
   if(!text||!('speechSynthesis' in window))return Promise.resolve(false);
   stopSpeech();lastText=text;
@@ -28,12 +28,25 @@ function browserSpeak(text,profile='sakhi'){
     current=u;speechSynthesis.speak(u);
   });
 }
+function getStoredAccessToken(){
+  try{
+    const cfg=window.RAINBOW_CONFIG||{};
+    const ref=(cfg.supabaseUrl||'').match(/^https:\/\/([^.]+)\.supabase\.co/)?.[1];
+    if(!ref)return '';
+    const raw=localStorage.getItem(`sb-${ref}-auth-token`);
+    if(!raw)return '';
+    const parsed=JSON.parse(raw);
+    return parsed?.access_token||parsed?.currentSession?.access_token||'';
+  }catch(_){return '';}
+}
 async function fetchNeural(text,kind,profile){
   const cfg=window.RAINBOW_CONFIG||{};
   if(!cfg.ttsEndpoint)return null;
+  const token=getStoredAccessToken();
+  if(!token)return null;
   const key=`${profile}|${kind}|${text}`;if(cache.has(key))return cache.get(key);
-  const r=await fetch(cfg.ttsEndpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({text,kind,profile})});
-  if(!r.ok)throw new Error('TTS service unavailable');
+  const r=await fetch(cfg.ttsEndpoint,{method:'POST',headers:{'content-type':'application/json','authorization':`Bearer ${token}`,'apikey':cfg.supabaseAnonKey||''},body:JSON.stringify({text,kind,profile})});
+  if(!r.ok)throw new Error(`TTS service unavailable (${r.status})`);
   const blob=await r.blob(),url=URL.createObjectURL(blob);cache.set(key,url);return url;
 }
 async function speak(text,{kind='instruction',profile='sakhi'}={}){
