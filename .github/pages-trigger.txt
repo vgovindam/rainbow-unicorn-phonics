@@ -1,0 +1,1 @@
+GitHub Pages redeploy trigger after repository visibility changed back to public.
