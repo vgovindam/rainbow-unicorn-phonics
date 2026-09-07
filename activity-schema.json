@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://family.local/rainbow-magic/activity-schema.json",
+  "title": "Rainbow Magic Child Activity",
+  "type": "object",
+  "required": [
+    "interaction_type",
+    "instruction_text",
+    "spoken_instruction",
+    "character_prompt",
+    "items",
+    "targets",
+    "correct_answer",
+    "distractors",
+    "hint_1",
+    "hint_2",
+    "hint_3",
+    "success_feedback",
+    "retry_feedback",
+    "mastery_signal",
+    "difficulty",
+    "estimated_minutes"
+  ],
+  "properties": {
+    "interaction_type": {
+      "enum": [
+        "tap_choice",
+        "multi_select",
+        "drag_drop",
+        "sort",
+        "match",
+        "memory",
+        "sequence",
+        "word_builder",
+        "number_manipulative",
+        "pattern_builder",
+        "find_it",
+        "trace",
+        "story_choice",
+        "movement",
+        "offline_activity"
+      ]
+    },
+    "instruction_text": {"type":"string","minLength":1,"maxLength":90},
+    "spoken_instruction": {"type":"string","minLength":1},
+    "character_prompt": {"type":"string","minLength":1,"maxLength":120},
+    "items": {"type":"array"},
+    "targets": {"type":"array"},
+    "correct_answer": {},
+    "distractors": {"type":"array"},
+    "hint_1": {"type":"string","minLength":1},
+    "hint_2": {"type":"string","minLength":1},
+    "hint_3": {"type":"string","minLength":1},
+    "success_feedback": {"type":"string","minLength":1},
+    "retry_feedback": {"type":"string","minLength":1},
+    "mastery_signal": {"type":"string","minLength":1},
+    "difficulty": {"type":"integer","minimum":1,"maximum":5},
+    "estimated_minutes": {"type":"number","exclusiveMinimum":0},
+    "reward": {"type":["string","null"]}
+  },
+  "additionalProperties": true
+}
