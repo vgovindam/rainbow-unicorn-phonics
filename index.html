@@ -10,6 +10,7 @@
 <title>Rainbow Magic Learning Adventure</title>
 <link rel="manifest" href="./manifest.json" />
 <link rel="stylesheet" href="./styles.css" />
+<link rel="stylesheet" href="./interactions.css" />
 </head>
 <body data-theme="unicorn">
 <main class="shell">
@@ -24,12 +25,11 @@
         <option value="library">📚 Enchanted Library</option>
         <option value="tower">🏰 Tower Princess Adventure</option>
         <option value="fairy">🧚 Fairy Garden</option>
-        <option value="dragon">🐉 Dragon Rescue</option>
         <option value="space">🚀 Space Princess</option>
       </select></label>
     </div>
     <h1><span class="rainbow">Rainbow Magic</span><br/>Learning Adventure</h1>
-    <p>Build a strong learner—not just a fast worksheet finisher. Literacy and math stay central while language, reasoning, science, memory, self-management, creativity, and life skills rotate through purposeful play.</p>
+    <p>See it, hear it, touch it, think, try, get feedback, and succeed. Literacy and math stay central while language, reasoning, science, memory, self-management, creativity, and life skills rotate through purposeful play.</p>
     <div class="row">
       <button class="btn primary" onclick="go('quest')">Start Today's Quest ✨</button>
       <button class="btn mint" onclick="go('baseline')">Reading Baseline 🔎</button>
@@ -42,7 +42,7 @@
 <div class="stats">
   <div class="stat"><b id="baseStat">0/33</b><span>Reading baseline</span></div>
   <div class="stat"><b id="masteredStat">0</b><span>Skills mastered</span></div>
-  <div class="stat"><b id="questStat">0/4</b><span>Today's quest</span></div>
+  <div class="stat"><b id="questStat">0/5</b><span>Today's quest</span></div>
   <div class="stat"><b id="rewardStat">0</b><span>Magic rewards</span></div>
 </div>
 
@@ -58,8 +58,8 @@
 <section id="home" class="view active">
   <div class="section-title"><h2>Today's learning balance</h2><p>15–25 minutes · 2–7 minutes per activity</p></div>
   <div class="grid">
-    <div class="card featured"><span class="badge kid">✨ Child Zone</span><h3>Four purposeful missions</h3><p>Each daily quest contains <b>literacy</b>, <b>math</b>, one <b>rotating thinking/knowledge domain</b>, and one <b>movement, creativity, or self-management mission</b>.</p><button class="btn primary" onclick="go('quest')">Open Today's Quest</button></div>
-    <div class="card"><span class="badge adult">🧑 Adult Zone</span><h3>Keep the challenge productive</h3><p>A normal practice activity should feel doable but require thought. If repeated failure starts, reduce choices, slow down, model one example, or use physical objects—then remove the help gradually.</p><div class="tip warn">Difficulty rises because performance shows readiness—not simply because another week passed.</div></div>
+    <div class="card featured"><span class="badge kid">✨ Child Zone</span><h3>Five interactive missions</h3><p>Each daily quest contains <b>two literacy experiences</b>, <b>math</b>, one <b>rotating thinking/knowledge domain</b>, and one <b>movement, creativity, or self-management mission</b>. The quest aims for at least three different interaction formats.</p><button class="btn primary" onclick="go('quest')">Open Today's Quest</button></div>
+    <div class="card"><span class="badge adult">🧑 Adult Zone</span><h3>Keep the challenge productive</h3><p>A normal practice activity should feel doable but require thought. If repeated failure starts, the app gives progressive hints and stronger scaffolds instead of punishment.</p><div class="tip warn">Difficulty rises because performance shows readiness—not simply because another week passed.</div></div>
   </div>
 
   <div class="section-title"><h2>Core priorities</h2><p>Literacy and mathematics appear most often.</p></div>
@@ -71,21 +71,21 @@
 
   <div class="section-title"><h2>Learning principles built into the app</h2><p>No bogus learning.</p></div>
   <div class="grid thirds">
-    <div class="card compact"><div class="principle-icon">🎯</div><h3>Clear objective</h3><p>Every mission names the exact skill and observable success criterion.</p></div>
+    <div class="card compact"><div class="principle-icon">🎯</div><h3>Real interaction</h3><p>Every child activity specifies an interaction type and enough data to render it.</p></div>
     <div class="card compact"><div class="principle-icon">🔁</div><h3>Spaced review</h3><p>Learned skills return later instead of disappearing after one good day.</p></div>
-    <div class="card compact"><div class="principle-icon">🪜</div><h3>Adaptive difficulty</h3><p>Support is added when needed and removed as independence increases.</p></div>
+    <div class="card compact"><div class="principle-icon">🪜</div><h3>Adaptive difficulty</h3><p>Attempts and hint usage become evidence; support increases when needed.</p></div>
   </div>
 </section>
 
 <section id="quest" class="view">
   <div class="section-title"><h2>✨ Today's Magical Quest</h2><p id="questDate"></p></div>
-  <div class="card quest-intro"><div><span class="badge kid">Child-facing missions</span><h3 id="questTitle">Luna's Learning Trail</h3><p id="questSummary">Four short activities. Parent reads the coaching note before each mission.</p></div><button class="btn soft" onclick="refreshQuest()">↻ New Mix</button></div>
+  <div class="card quest-intro"><div><span class="badge kid">Child-facing missions</span><h3 id="questTitle">Luna's Learning Trail</h3><p id="questSummary">Five short missions. Tap 🔊 Hear It whenever you want the instruction again.</p></div><button class="btn soft" onclick="refreshQuest()">↻ New Mix</button></div>
   <div id="questCards" class="quest-list"></div>
   <div id="activityRunner" class="card runner"></div>
 </section>
 
 <section id="learn" class="view">
-  <div class="section-title"><h2>🗺️ Learning Kingdom</h2><p>Tap a domain to see skills and purposeful activities.</p></div>
+  <div class="section-title"><h2>🗺️ Learning Kingdom</h2><p>Tap a domain to see skills and interactive missions.</p></div>
   <div id="domainGrid" class="domain-grid"></div>
   <div id="domainDetail" class="domain-detail"></div>
 </section>
@@ -121,12 +121,12 @@
 </section>
 
 <section id="rewards" class="view">
-  <div class="section-title"><h2>🌟 Rainbow Reward Map</h2><p>Reward effort, thinking, persistence, improvement, and independence.</p></div>
+  <div class="section-title"><h2>✨ Shiny Star Reward Map</h2><p>Reward effort, thinking, persistence, improvement, and independence.</p></div>
   <div class="card"><div id="rewardGrid" class="reward-grid"></div></div>
-  <div class="grid" style="margin-top:13px"><div class="card"><h3>Praise learning behaviors</h3><div class="say">“You kept trying when the puzzle was tricky.”</div><div class="say">“You checked your work before you answered.”</div><div class="say">“You explained how you figured it out.”</div></div><div class="card"><h3>Do not reward only correctness</h3><p>Magic rewards can recognize careful listening, useful strategies, asking for help, flexible thinking, persistence, and doing something more independently than before.</p></div></div>
+  <div class="grid" style="margin-top:13px"><div class="card"><h3>Praise learning behaviors</h3><div class="say">“You kept trying when the puzzle was tricky.”</div><div class="say">“You checked your work before you answered.”</div><div class="say">“You explained how you figured it out.”</div></div><div class="card"><h3>Effort is not fake mastery</h3><p>Shiny rewards can recognize careful listening, useful strategies, asking for help, flexible thinking, persistence, and increasing independence while the skill tracker remains evidence-based.</p></div></div>
 </section>
 
-<div class="footer">🌈 Build the learner, not just the score · No login · No ads · No child data uploaded</div>
+<div class="footer">✨ Private family learning app · No login · No ads · No child data uploaded</div>
 </main>
 
 <nav class="bottom" aria-label="Mobile navigation">
@@ -135,10 +135,11 @@
   <button data-go="learn"><span>🗺️</span>Learn</button>
   <button data-go="baseline"><span>🔎</span>Read</button>
   <button data-go="parent"><span>🧑</span>Parent</button>
-  <button data-go="rewards"><span>🌟</span>Rewards</button>
+  <button data-go="rewards"><span>⭐</span>Stars</button>
 </nav>
 <div class="toast" id="toast">Saved ✨</div>
 <script src="./app.js"></script>
 <script src="./scheduler.js"></script>
+<script src="./interaction-engine.js"></script>
 </body>
 </html>
