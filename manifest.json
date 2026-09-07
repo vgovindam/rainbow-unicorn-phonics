@@ -1,0 +1,13 @@
+{
+  "name": "Rainbow Magic Phonics Adventure",
+  "short_name": "Magic Phonics",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff8fd",
+  "theme_color": "#9257de",
+  "description": "A parent-guided, kid-friendly phonics adventure with unicorn and storybook-princess themes.",
+  "icons": [
+    {"src":"./unicorn-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
