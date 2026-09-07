@@ -114,7 +114,7 @@
 </section>
 
 <section id="parent" class="view">
-  <div class="section-title"><h2>🧑 Parent Dashboard</h2><p>Progress is preserved in this browser and can be exported as a backup.</p></div>
+  <div class="section-title"><h2>🧑 Parent Dashboard</h2><p>Progress is preserved. Family Sync can resume the same learner on another authenticated device.</p></div>
   <div class="grid">
     <div class="card"><h3>Recommended next focus</h3><div id="nextFocus" class="say"></div><p class="muted">A single successful attempt never marks a skill fully mastered. The app looks for repeated success across days and activity formats.</p></div>
     <div class="card"><h3>Session guardrails</h3><p><b>Typical session:</b> 15–25 min<br><b>Activity:</b> usually 2–7 min<br><b>Normal practice target:</b> roughly 80–90% success<br><b>When struggling:</b> scaffold<br><b>When repeatedly strong:</b> increase difficulty slightly</p></div>
@@ -133,7 +133,7 @@
   <div class="grid" style="margin-top:13px"><div class="card"><h3>Praise learning behaviors</h3><div class="say">“You kept trying when the puzzle was tricky.”</div><div class="say">“You checked your work before you answered.”</div><div class="say">“You explained how you figured it out.”</div></div><div class="card"><h3>Do not reward only correctness</h3><p>Magic rewards can recognize careful listening, useful strategies, asking for help, flexible thinking, persistence, and doing something more independently than before.</p></div></div>
 </section>
 
-<div class="footer">🌈 Build the learner, not just the score · No login · No ads · Progress stays on-device</div>
+<div class="footer">🌈 Build the learner, not just the score · No ads · Family progress can sync securely across devices</div>
 </main>
 
 <nav class="bottom" aria-label="Mobile navigation">
@@ -145,10 +145,15 @@
   <button data-go="rewards"><span>🌟</span>Rewards</button>
 </nav>
 <div class="toast" id="toast">Saved ✨</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
+<script src="./curriculum.js"></script>
+<script src="./persistence.js"></script>
 <script src="./app.js"></script>
 <script src="./scheduler.js"></script>
 <script src="./interaction-engine.js"></script>
 <script src="./visuals.js"></script>
 <script src="./kid-upgrade.js"></script>
+<script src="./backend-bridge.js"></script>
 </body>
 </html>
