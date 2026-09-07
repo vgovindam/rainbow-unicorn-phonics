@@ -6,20 +6,21 @@
 <meta name="theme-color" content="#9257de" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="Magic Learning" />
-<title>Rainbow Magic Learning Adventure</title>
+<meta name="apple-mobile-web-app-title" content="Sakhi Magic Learning" />
+<title>Sakhi Magic Learning</title>
 <link rel="manifest" href="./manifest.json" />
 <link rel="stylesheet" href="./styles.css" />
 <link rel="stylesheet" href="./interactions.css" />
 <link rel="stylesheet" href="./visuals.css" />
 <link rel="stylesheet" href="./kid-upgrade.css" />
+<link rel="stylesheet" href="./sakhi-shell.css" />
 </head>
 <body data-theme="unicorn">
 <main class="shell">
 <section class="hero glass">
   <div class="hero-content">
     <div class="hero-top">
-      <span class="eyebrow">👨‍👩‍👧 Adult-guided · Age 5</span>
+      <span class="eyebrow">✨ Meet Sakhi, your magical learning friend</span>
       <label class="theme-picker"><span>Adventure</span><select id="themeSelect" aria-label="Adventure theme" onchange="setTheme(this.value)">
         <option value="unicorn">🦄 Rainbow Unicorn Kingdom</option>
         <option value="ice">❄️ Ice Princess Castle</option>
@@ -30,17 +31,11 @@
         <option value="space">🍭 Cotton Candy Castle</option>
       </select></label>
     </div>
-    <h1><span class="rainbow">Rainbow Magic</span><br/>Learning Adventure</h1>
-    <p>Build a strong learner—not just a fast worksheet finisher. Literacy and math stay central while language, reasoning, science, memory, self-management, creativity, and life skills rotate through purposeful play.</p>
-    <div class="row">
-      <button class="btn primary" onclick="go('quest')">Start Today's Quest ✨</button>
-      <button class="btn mint" onclick="go('baseline')">Reading Baseline 🔎</button>
-      <button class="btn soft" onclick="go('learn')">Explore Skills 🗺️</button>
-    </div>
+    <h1><span class="rainbow">Sakhi</span><br/>Magic Learning</h1>
+    <p>A magical, personalized learning adventure that grows with your child.</p>
+    <div class="row"><button class="btn primary" onclick="go('quest')">🌈 Start My Adventure</button></div>
   </div>
-  <div class="hero-visual">
-    <div class="hero-art" id="heroArt" aria-hidden="true">🦄</div>
-  </div>
+  <div class="hero-visual"><div class="hero-art" id="heroArt" aria-hidden="true">🦄</div></div>
 </section>
 
 <div class="stats">
@@ -55,7 +50,7 @@
   <button data-go="quest">✨ Today's Quest</button>
   <button data-go="learn">🗺️ Learn</button>
   <button data-go="baseline">🔎 Reading Baseline</button>
-  <button data-go="parent">🧑 Parent</button>
+  <button data-go="parent">🔒 Parents</button>
   <button data-go="rewards">🌟 Rewards</button>
 </nav>
 
@@ -86,7 +81,7 @@
 
 <section id="quest" class="view">
   <div class="section-title"><h2>✨ Today's Magical Quest</h2><p id="questDate"></p></div>
-  <div class="card quest-intro"><div><span class="badge kid">Child-facing missions</span><h3 id="questTitle">Luna's Learning Trail</h3><p id="questSummary">Five short missions. Tap 🔊 Hear It whenever you want the instruction again.</p></div><button class="btn soft" onclick="refreshQuest()">↻ New Mix</button></div>
+  <div class="card quest-intro"><div><span class="badge kid">Child-facing missions</span><h3 id="questTitle">Sakhi's Learning Trail</h3><p id="questSummary">Five short missions. Tap 🔊 Hear It whenever you want the instruction again.</p></div><button class="btn soft" onclick="refreshQuest()">↻ New Mix</button></div>
   <div id="questCards" class="quest-list"></div>
   <div id="activityRunner" class="card runner"></div>
 </section>
@@ -98,8 +93,8 @@
 </section>
 
 <section id="baseline" class="view">
-  <div class="section-title"><h2>🔎 Reading Baseline Adventure</h2><p><span class="badge adult">Adult-guided</span> 5–10 minutes</p></div>
-  <div class="card"><h3>Parent script</h3><div class="say">“Luna lost some rainbow crystals. She needs a Sound Detective! Every sound challenge helps bring one back. Want to help?”</div><p class="muted">Give about 3 seconds per answer. Do not teach during this check. If she does not know one, say: “That's okay. Let's try another one.”</p></div>
+  <div class="section-title"><h2>✨ Sakhi's Magic Challenge</h2><p><span class="badge adult">Adult-guided</span> 5–10 minutes</p></div>
+  <div class="card"><h3>Parent script</h3><div class="say">“Sakhi lost some rainbow crystals. She needs a Sound Detective! Every sound challenge helps bring one back. Want to help?”</div><p class="muted">Give about 3 seconds per answer. Do not teach during this check. If she does not know one, say: “That's okay. Let's try another one.”</p></div>
   <div id="assessment"></div>
   <div class="card baseline-actions"><button class="btn primary" onclick="go('lesson')">Open Phonics Day 1 🦄</button><button class="btn soft" onclick="resetBaseline()">Reset baseline</button></div>
   <div class="score-panel"><div class="score-top"><div><div class="score-big"><span id="scoreNow">0</span> / 33</div><div class="recommend" id="recommendation">Complete the sections to find the best reading starting point.</div></div></div><div class="bar"><i id="scoreBar"></i></div></div>
@@ -114,7 +109,8 @@
 </section>
 
 <section id="parent" class="view">
-  <div class="section-title"><h2>🧑 Parent Dashboard</h2><p>Progress is preserved. Family Sync can resume the same learner on another authenticated device.</p></div>
+  <div class="section-title"><h2>🔒 Parents</h2><p>Progress is preserved. Family Sync can resume the same learner on another authenticated device.</p></div>
+  <div class="parent-lock-row"><button class="btn soft" onclick="lockSakhiParent()">🔒 Lock Parent Mode</button></div>
   <div class="grid">
     <div class="card"><h3>Recommended next focus</h3><div id="nextFocus" class="say"></div><p class="muted">A single successful attempt never marks a skill fully mastered. The app looks for repeated success across days and activity formats.</p></div>
     <div class="card"><h3>Session guardrails</h3><p><b>Typical session:</b> 15–25 min<br><b>Activity:</b> usually 2–7 min<br><b>Normal practice target:</b> roughly 80–90% success<br><b>When struggling:</b> scaffold<br><b>When repeatedly strong:</b> increase difficulty slightly</p></div>
@@ -133,7 +129,7 @@
   <div class="grid" style="margin-top:13px"><div class="card"><h3>Praise learning behaviors</h3><div class="say">“You kept trying when the puzzle was tricky.”</div><div class="say">“You checked your work before you answered.”</div><div class="say">“You explained how you figured it out.”</div></div><div class="card"><h3>Do not reward only correctness</h3><p>Magic rewards can recognize careful listening, useful strategies, asking for help, flexible thinking, persistence, and doing something more independently than before.</p></div></div>
 </section>
 
-<div class="footer">🌈 Build the learner, not just the score · No ads · Family progress can sync securely across devices</div>
+<div class="footer">✨ Sakhi Magic Learning · No ads · Family progress can sync securely across devices</div>
 </main>
 
 <nav class="bottom" aria-label="Mobile navigation">
@@ -141,7 +137,7 @@
   <button data-go="quest"><span>✨</span>Quest</button>
   <button data-go="learn"><span>🗺️</span>Learn</button>
   <button data-go="baseline"><span>🔎</span>Read</button>
-  <button data-go="parent"><span>🧑</span>Parent</button>
+  <button data-go="parent"><span>🔒</span>Parents</button>
   <button data-go="rewards"><span>🌟</span>Rewards</button>
 </nav>
 <div class="toast" id="toast">Saved ✨</div>
@@ -149,6 +145,7 @@
 <script src="./supabase-config.js"></script>
 <script src="./curriculum.js"></script>
 <script src="./persistence.js"></script>
+<script src="./speech-service.js"></script>
 <script src="./app.js"></script>
 <script src="./scheduler.js"></script>
 <script src="./interaction-engine.js"></script>
@@ -156,5 +153,6 @@
 <script src="./kid-upgrade.js"></script>
 <script src="./adaptive-engine.js"></script>
 <script src="./backend-bridge.js"></script>
+<script src="./sakhi-shell.js"></script>
 </body>
 </html>
