@@ -21,5 +21,12 @@ jobs:
           node --check app.js
           node --check scheduler.js
           node --check interaction-engine.js
+          node --check persistence.js
+          node --check backend-bridge.js
+          node --check speech-service.js
+          node --check sakhi-shell.js
+          node --check adaptive-engine.js
+          node --check curriculum.js
+          node --check kid-upgrade.js
       - name: Check required interaction schema fields
         run: node scripts/validate-activities.cjs
