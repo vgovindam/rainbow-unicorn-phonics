@@ -50,6 +50,17 @@ function openParentGate(){
 window.openParentGate=openParentGate;
 window.lockSakhiParent=()=>{lockParent(); if(typeof window.__sakhiGo==='function')window.__sakhiGo('home');};
 
+function ensureFamilySyncCard(){
+ const parent=document.getElementById('parent');if(!parent||document.getElementById('familySyncCard'))return;
+ const card=document.createElement('div');
+ card.id='familySyncCard';
+ card.className='card family-sync sakhi-family-sync';
+ card.innerHTML='<h3>☁️ Family Progress Sync</h3><p>Checking your secure family connection…</p><div class="family-sync-status">Please wait a moment.</div>';
+ const lockRow=parent.querySelector('.parent-lock-row');
+ const firstGrid=parent.querySelector('.grid');
+ if(lockRow)lockRow.after(card);else if(firstGrid)firstGrid.before(card);else parent.appendChild(card);
+}
+
 function simplifyHome(){
  const home=document.getElementById('home'); if(!home)return;
  const old=home.querySelector('.section-title'); if(old)old.style.display='none';
@@ -97,6 +108,6 @@ function installParentGuard(){
  document.querySelectorAll('[data-go="parent"]').forEach(b=>{b.onclick=e=>{e.preventDefault();window.go('parent');};});
 }
 
-function init(){rebrand();installParentGuard();simplifyHome();ensureParentGate();}
+function init(){rebrand();installParentGuard();simplifyHome();ensureParentGate();ensureFamilySyncCard();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
