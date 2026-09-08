@@ -1,1 +1,51 @@
-.sakhi-child-home{display:grid;gap:18px;margin:8px 0 22px}.sakhi-guide{display:flex;align-items:center;gap:16px;padding:20px;border-radius:28px;background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(247,239,255,.95));box-shadow:0 14px 36px rgba(76,42,115,.12)}.sakhi-avatar{width:82px;height:82px;border-radius:50%;display:grid;place-items:center;font-size:42px;background:radial-gradient(circle at 35% 30%,#fff,#f0dcff 55%,#d9b7ff);box-shadow:inset 0 0 0 4px rgba(255,255,255,.8),0 8px 20px rgba(120,74,173,.18)}.sakhi-kicker{font-size:12px;font-weight:900;letter-spacing:.12em;color:#7e4bb1}.sakhi-guide h2{margin:4px 0 6px;font-size:clamp(28px,5vw,46px);line-height:1.05}.sakhi-guide p{margin:0;font-size:18px}.sakhi-start{min-height:84px;border:0;border-radius:28px;font-size:clamp(23px,4vw,34px);font-weight:900;padding:18px 24px;cursor:pointer;background:linear-gradient(135deg,#8f5be8,#ef8fcf,#ffc96a);color:#fff;box-shadow:0 14px 28px rgba(113,73,175,.25)}.sakhi-kingdoms{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.sakhi-kingdoms button{border:0;border-radius:24px;min-height:128px;padding:16px 10px;background:rgba(255,255,255,.92);box-shadow:0 8px 22px rgba(55,38,82,.11);cursor:pointer;font:inherit}.sakhi-kingdoms button span{display:block;font-size:38px;margin-bottom:8px}.sakhi-kingdoms button b{font-size:16px}.parent-gate{position:fixed;inset:0;background:rgba(30,20,42,.58);backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px;z-index:9999}.parent-gate.hidden{display:none}.parent-gate-card{width:min(420px,100%);background:#fff;border-radius:28px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.24);text-align:center;position:relative}.parent-close{position:absolute;right:14px;top:12px;border:0;background:transparent;font-size:30px;cursor:pointer}.parent-lock-icon{font-size:42px}.parent-gate-card h2{margin:6px 0}.parent-gate-card input{width:100%;box-sizing:border-box;min-height:60px;border:2px solid #ddd2ea;border-radius:18px;padding:10px 16px;font-size:28px;text-align:center;letter-spacing:.2em;margin:10px 0}.parent-gate-msg{min-height:24px;margin-top:8px;color:#7b4260}.sakhi-secondary-content{opacity:.98}.hear-again-sakhi{min-height:58px;border-radius:20px;font-weight:800}.parent-lock-row{display:flex;justify-content:flex-end;margin-bottom:12px}@media(max-width:800px){.sakhi-kingdoms{grid-template-columns:repeat(2,minmax(0,1fr))}.sakhi-guide{align-items:flex-start}.sakhi-avatar{width:68px;height:68px;font-size:34px}.sakhi-kingdoms button:last-child{grid-column:1/-1}.sakhi-secondary-content{display:none}.hero p{max-width:36ch}.stats{display:none}}
+.parent-nav{margin-left:auto}
+
+#home{max-width:1120px;margin:0 auto}
+#home .hero{min-height:440px;display:flex;align-items:center;margin-top:10px;padding:42px}
+#home .hero-content{max-width:610px}
+#home .hero p{font-size:20px;margin:0 0 24px;padding:0}
+#home .hero-visual{position:absolute;inset:0 0 0 58%;pointer-events:none}
+#home .hero-sprite{position:absolute;inset:25px 20px 25px 0;width:auto;height:auto;border-radius:28px}
+#home .hero-sparkles{position:absolute;right:38px;top:32px;font-size:24px}
+.sakhi-kicker{font-size:12px;font-weight:950;letter-spacing:.13em;color:#7e4bb1}
+.sakhi-start{min-height:72px;border:0;border-radius:24px;font-size:clamp(20px,3vw,28px);font-weight:950;padding:16px 24px;cursor:pointer;background:linear-gradient(135deg,#8f5be8,#ef8fcf,#ffc96a);color:#fff;box-shadow:0 14px 28px rgba(113,73,175,.25)}
+.child-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 24px}
+.child-progress>div{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;align-items:center;padding:14px 18px;border-radius:20px;background:rgba(255,255,255,.86);border:1px solid var(--line);box-shadow:0 8px 24px rgba(73,44,102,.07)}
+.child-progress span{grid-row:1/3;font-size:28px}.child-progress b{font-size:22px}.child-progress small{color:var(--muted);font-weight:850}
+.home-heading{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:8px 3px 14px}.home-heading h2{font-size:28px;margin:4px 0 0}
+.home-controls{display:flex;align-items:center;gap:8px}.parent-home-link{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.85);color:var(--muted);padding:10px 12px;font-size:12px;font-weight:850;cursor:pointer}
+.sakhi-kingdoms{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.sakhi-kingdoms button{border:1px solid var(--line);border-radius:24px;min-height:156px;padding:20px 12px;background:rgba(255,255,255,.94);box-shadow:0 8px 22px rgba(55,38,82,.1);cursor:pointer;color:var(--ink)}
+.sakhi-kingdoms button:nth-child(1){background:linear-gradient(145deg,#fff,#fff0f7)}
+.sakhi-kingdoms button:nth-child(2){background:linear-gradient(145deg,#fff,#fff8df)}
+.sakhi-kingdoms button:nth-child(3){background:linear-gradient(145deg,#fff,#f1edff)}
+.sakhi-kingdoms button:nth-child(4){background:linear-gradient(145deg,#fff,#eafcff)}
+.sakhi-kingdoms button:nth-child(5){background:linear-gradient(145deg,#fff,#ecfff6)}
+.sakhi-kingdoms button span{display:block;font-size:44px;margin-bottom:8px}.sakhi-kingdoms button b{display:block;font-size:16px}.sakhi-kingdoms button small{display:block;color:var(--muted);margin-top:5px;font-weight:750}
+
+.parent-header{display:flex;align-items:start;justify-content:space-between;gap:24px;padding:28px 30px;border-radius:28px;background:#312840;color:#fff;margin-top:10px}
+.parent-header h1{margin:8px 0;font-size:clamp(32px,5vw,48px)}.parent-header p{color:#d8d0e5;max-width:700px;margin:0;line-height:1.5}
+.parent-tabs{display:flex;gap:7px;overflow:auto;padding:8px;margin:14px 0 20px;border-radius:18px;background:rgba(255,255,255,.9);border:1px solid var(--line);scrollbar-width:none}
+.parent-tabs button{white-space:nowrap;border:0;background:transparent;color:var(--muted);border-radius:12px;padding:10px 13px;font-weight:850;cursor:pointer}
+.parent-tabs button.active{background:#352b45;color:#fff}
+.parent-panel{animation:panel-in .18s ease-out}.parent-panel[hidden]{display:none}.parent-panel.active{display:block}
+.parent-panel>.section-title:first-child{margin-top:0}
+#placementSlot:not(:empty){margin-bottom:13px}#insightsSlot:not(:empty),#familySyncSlot:not(:empty),#dataSafetySlot:not(:empty){margin-top:13px}
+@keyframes panel-in{from{opacity:.4;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.parent-gate{position:fixed;inset:0;background:rgba(30,20,42,.58);backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px;z-index:9999}
+.parent-gate.hidden{display:none}.parent-gate-card{width:min(420px,100%);background:#fff;border-radius:28px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.24);text-align:center;position:relative}
+.parent-close{position:absolute;right:14px;top:12px;border:0;background:transparent;font-size:30px;cursor:pointer}.parent-lock-icon{font-size:42px}.parent-gate-card h2{margin:6px 0}.parent-gate-card input{width:100%;min-height:60px;border:2px solid #ddd2ea;border-radius:18px;padding:10px 16px;font-size:28px;text-align:center;letter-spacing:.2em;margin:10px 0}.parent-gate-msg{min-height:24px;margin-top:8px;color:#7b4260}
+.hear-again-sakhi{min-height:58px;border-radius:20px;font-weight:800}
+
+@media(max-width:800px){
+  #home .hero{min-height:390px;padding:27px 22px;align-items:flex-start}
+  #home .hero-content{max-width:72%}#home .hero p{font-size:17px}
+  #home .hero-visual{inset:0 0 0 52%}#home .hero-sprite{inset:145px 6px 18px 0}
+  .sakhi-kingdoms{grid-template-columns:repeat(2,minmax(0,1fr))}.sakhi-kingdoms button:last-child{grid-column:1/-1}
+  .home-heading{align-items:stretch;flex-direction:column}.home-controls{align-items:stretch;flex-direction:column}.child-progress{grid-template-columns:repeat(3,1fr)}
+  .child-progress>div{display:flex;flex-direction:column;text-align:center;gap:2px;padding:11px 5px}.child-progress span{font-size:22px}.child-progress b{font-size:18px}
+  .parent-header{padding:22px;flex-direction:column}.parent-header .btn{align-self:stretch}.parent-tabs{border-radius:15px}
+  .bottom{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:480px){#home .hero{min-height:405px}#home .hero-content{max-width:82%}.sakhi-start{font-size:18px}.sakhi-kingdoms button{min-height:130px}.sakhi-kingdoms button span{font-size:38px}}

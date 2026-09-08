@@ -65,48 +65,31 @@ function ensureFamilySyncCard(){
  card.id='familySyncCard';
  card.className='card family-sync sakhi-family-sync';
  card.innerHTML='<h3>☁️ Family Progress Sync</h3><p>Checking your secure family connection…</p><div class="family-sync-status">Please wait a moment.</div>';
- const lockRow=parent.querySelector('.parent-lock-row');
- const firstGrid=parent.querySelector('.grid');
- if(lockRow)lockRow.after(card);else if(firstGrid)firstGrid.before(card);else parent.appendChild(card);
+ const slot=document.getElementById('familySyncSlot');
+ (slot||parent).appendChild(card);
 }
 
-function simplifyHome(){
- const home=document.getElementById('home'); if(!home)return;
- const old=home.querySelector('.section-title'); if(old)old.style.display='none';
- home.querySelectorAll('.grid,.priority-grid,.scene-gallery').forEach((el,i)=>{if(i<3)el.classList.add('sakhi-secondary-content');});
- let intro=document.getElementById('sakhiChildHome');
- if(!intro){
-   intro=document.createElement('section'); intro.id='sakhiChildHome'; intro.className='sakhi-child-home';
-   intro.innerHTML=`
-    <div class="sakhi-guide">
-      <div class="sakhi-avatar" aria-hidden="true">✨</div>
-      <div><span class="sakhi-kicker">SAKHI MAGIC LEARNING</span><h2>Ready for today's magical adventure?</h2><p>Listen, touch, move, build, discover.</p></div>
-    </div>
-    <button class="sakhi-start" type="button">🌈 START MY ADVENTURE</button>
-    <div class="sakhi-kingdoms">
-      <button data-kind="reading"><span>📚</span><b>Story Kingdom</b></button>
-      <button data-kind="math"><span>🔢</span><b>Number Kingdom</b></button>
-      <button data-kind="logic"><span>🧩</span><b>Puzzle Palace</b></button>
-      <button data-kind="science"><span>🔬</span><b>Discovery World</b></button>
-      <button data-kind="creativity"><span>🎨</span><b>Create & Play</b></button>
-    </div>`;
-   home.prepend(intro);
-   intro.querySelector('.sakhi-start').onclick=()=>window.go?.('quest');
-   intro.querySelectorAll('[data-kind]').forEach(b=>b.onclick=()=>{const d=b.dataset.kind;if(typeof openDomain==='function'){window.go?.('learn');setTimeout(()=>openDomain(d),40);}});
- }
+function bindKingdoms(){
+ document.querySelectorAll('[data-domain]').forEach(button=>button.addEventListener('click',()=>{
+   window.go?.('learn');
+   setTimeout(()=>window.openDomain?.(button.dataset.domain),40);
+ }));
 }
 
-function rebrand(){
- document.title='Sakhi Magic Learning';
- const apple=document.querySelector('meta[name="apple-mobile-web-app-title"]');if(apple)apple.content='Sakhi Magic Learning';
- const h=document.querySelector('.hero h1');if(h)h.innerHTML='<span class="rainbow">Sakhi</span><br/>Magic Learning';
- const p=document.querySelector('.hero p');if(p)p.textContent='A magical, personalized learning adventure that grows with your child.';
- const eye=document.querySelector('.hero .eyebrow');if(eye)eye.textContent='✨ Meet Sakhi, your magical learning friend';
- const heroBtns=document.querySelector('.hero .row');if(heroBtns)heroBtns.innerHTML='<button class="btn primary" onclick="go(\'quest\')">🌈 Start My Adventure</button>';
- document.querySelectorAll('.nav [data-go="parent"],.bottom [data-go="parent"]').forEach(b=>{b.innerHTML=b.closest('.bottom')?'<span>🔒</span>Parents':'🔒 Parents';});
- const parentTitle=document.querySelector('#parent .section-title h2');if(parentTitle)parentTitle.textContent='🔒 Parents';
+function showParentPanel(id){
+ document.querySelectorAll('[data-parent-panel]').forEach(button=>button.classList.toggle('active',button.dataset.parentPanel===id));
+ document.querySelectorAll('[data-parent-content]').forEach(panel=>{
+   const active=panel.dataset.parentContent===id;
+   panel.classList.toggle('active',active);
+   panel.hidden=!active;
+ });
 }
 
-function init(){rebrand();simplifyHome();ensureParentGate();ensureFamilySyncCard();}
+function bindParentTabs(){
+ document.querySelectorAll('[data-parent-panel]').forEach(button=>button.addEventListener('click',()=>showParentPanel(button.dataset.parentPanel)));
+ showParentPanel('overview');
+}
+
+function init(){ensureParentGate();ensureFamilySyncCard();bindKingdoms();bindParentTabs();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

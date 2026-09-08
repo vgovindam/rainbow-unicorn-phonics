@@ -122,3 +122,35 @@ test('Authoritative interaction engine owns every navigation renderer', () => {
   assert.match(source('app.js'),/const art=document\.getElementById\('heroArt'\);if\(art\)/);
   assert.match(engine,/querySelectorAll\(`\[data-placed=.*?forEach\(chip=>chip\.remove\(\)\)/s);
 });
+
+test('Child home and parent tools are structurally separated', () => {
+  const html=source('index.html');
+  const homeStart=html.indexOf('<section id="home"');
+  const questStart=html.indexOf('<section id="quest"');
+  const heroStart=html.indexOf('<section class="hero glass">');
+  const parentStart=html.indexOf('<section id="parent"');
+  const home=html.slice(homeStart,questStart);
+  assert.ok(homeStart>=0&&heroStart>homeStart&&heroStart<questStart,'hero must belong only to Home');
+  assert.doesNotMatch(home,/Adult Zone|Session guardrails|Reading baseline breakdown|Learning principles/);
+  assert.ok(parentStart>questStart,'parent dashboard must be a separate view');
+  assert.match(html,/data-parent-content="overview"/);
+  assert.match(html,/data-parent-content="settings"/);
+  assert.doesNotMatch(source('sakhi-shell.js'),/simplifyHome|sakhi-secondary-content/);
+});
+
+test('Child navigation exposes only four child destinations', () => {
+  const html=source('index.html');
+  const desktop=html.match(/<nav class="nav"[\s\S]*?<\/nav>/)[0];
+  const mobile=html.match(/<nav class="bottom"[\s\S]*?<\/nav>/)[0];
+  assert.doesNotMatch(desktop,/data-go="baseline"/);
+  assert.doesNotMatch(mobile,/data-go="baseline"|data-go="parent"/);
+  assert.equal((mobile.match(/data-go=/g)||[]).length,4);
+});
+
+test('Revision 15 consistently versions production assets and cache', () => {
+  const html=source('index.html');
+  assert.match(html,/name="sakhi-revision" content="15"/);
+  for(const match of html.matchAll(/(?:src|href)="\.\/[^"?]+\?v=(\d+)"/g))assert.equal(match[1],'15');
+  assert.match(source('sw.js'),/sakhi-magic-learning-v15/);
+  assert.doesNotMatch(source('sw.js'),/\?v=14/);
+});

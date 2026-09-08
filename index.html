@@ -7,75 +7,49 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Sakhi Magic Learning" />
-<meta name="sakhi-revision" content="14" />
+<meta name="sakhi-revision" content="15" />
 <title>Sakhi Magic Learning</title>
-<link rel="manifest" href="./manifest.json?v=14" />
-<link rel="stylesheet" href="./styles.css?v=14" />
-<link rel="stylesheet" href="./interactions.css?v=14" />
-<link rel="stylesheet" href="./visuals.css?v=14" />
-<link rel="stylesheet" href="./sakhi-shell.css?v=14" />
+<link rel="manifest" href="./manifest.json?v=15" />
+<link rel="stylesheet" href="./styles.css?v=15" />
+<link rel="stylesheet" href="./interactions.css?v=15" />
+<link rel="stylesheet" href="./visuals.css?v=15" />
+<link rel="stylesheet" href="./sakhi-shell.css?v=15" />
 </head>
 <body data-theme="unicorn">
 <main class="shell">
-<section class="hero glass">
-  <div class="hero-content">
-    <div class="hero-top">
-      <span class="eyebrow">✨ Meet Sakhi, your magical learning friend</span>
-      <label class="theme-picker"><span>Adventure</span><select id="themeSelect" aria-label="Adventure theme" onchange="setTheme(this.value)">
-        <option value="unicorn">🦄 Rainbow Unicorn Kingdom</option>
-        <option value="ice">❄️ Ice Princess Castle</option>
-        <option value="mermaid">🧜‍♀️ Mermaid Ocean Adventure</option>
-        <option value="library">🌳 Forest Friends</option>
-        <option value="tower">🏰 Princess Garden Castle</option>
-        <option value="fairy">🧚 Moon Fairy Garden</option>
-        <option value="space">🍭 Cotton Candy Castle</option>
-      </select></label>
-    </div>
-    <h1><span class="rainbow">Sakhi</span><br/>Magic Learning</h1>
-    <p>A magical, personalized learning adventure that grows with your child.</p>
-    <div class="row"><button class="btn primary" onclick="go('quest')">🌈 Start My Adventure</button></div>
-  </div>
-  <div class="hero-visual"><div class="hero-art" id="heroArt" aria-hidden="true">🦄</div></div>
-</section>
-
-<div class="stats">
-  <div class="stat"><b id="baseStat">0/33</b><span>Reading baseline</span></div>
-  <div class="stat"><b id="masteredStat">0</b><span>Skills mastered</span></div>
-  <div class="stat"><b id="questStat">0/5</b><span>Today's quest</span></div>
-  <div class="stat"><b id="rewardStat">0</b><span>Magic rewards</span></div>
-</div>
-
 <nav class="nav" aria-label="Main navigation">
   <button data-go="home" class="active">🏠 Home</button>
-  <button data-go="quest">✨ Today's Quest</button>
-  <button data-go="learn">🗺️ Learn</button>
-  <button data-go="baseline">🔎 Reading Baseline</button>
-  <button data-go="parent">🔒 Parents</button>
+  <button data-go="quest">✨ Adventure</button>
+  <button data-go="learn">🗺️ Kingdoms</button>
   <button data-go="rewards">🌟 Rewards</button>
+  <button data-go="parent" class="parent-nav">🔒 Parents</button>
 </nav>
 
 <section id="home" class="view active">
-  <div class="section-title"><h2>Today's learning balance</h2><p>15–25 minutes · 2–7 minutes per activity</p></div>
-  <div class="grid">
-    <div class="card featured"><span class="badge kid">✨ Child Zone</span><h3>Five interactive missions</h3><p>Each daily quest contains <b>two literacy experiences</b>, <b>math</b>, one <b>rotating thinking/knowledge domain</b>, and one <b>movement, creativity, or self-management mission</b>. The quest aims for at least three different interaction formats.</p><button class="btn primary" onclick="go('quest')">Open Today's Quest</button></div>
-    <div class="card"><span class="badge adult">🧑 Adult Zone</span><h3>Keep the challenge productive</h3><p>A normal practice activity should feel doable but require thought. If repeated failure starts, reduce choices, slow down, model one example, or use physical objects—then remove the help gradually.</p><div class="tip warn">Difficulty rises because performance shows readiness—not simply because another week passed.</div></div>
+  <section class="hero glass">
+    <div class="hero-content">
+      <div class="hero-top"><span class="eyebrow">✨ Meet Sakhi, your magical learning friend</span></div>
+      <h1><span class="rainbow">Sakhi</span><br/>Magic Learning</h1>
+      <p>Listen, touch, move, build, and discover.</p>
+      <button class="sakhi-start" type="button" onclick="go('quest')">🌈 Start My Adventure</button>
+    </div>
+    <div class="hero-visual"><div class="hero-art" id="heroArt" aria-hidden="true">🦄</div></div>
+  </section>
+  <div class="child-progress" aria-label="Adventure progress">
+    <div><span>✨</span><b id="questStat">0/5</b><small>Quest</small></div>
+    <div><span>🏆</span><b id="masteredStat">0</b><small>Skills</small></div>
+    <div><span>🌟</span><b id="rewardStat">0</b><small>Rewards</small></div>
+    <span id="baseStat" hidden>0/33</span>
   </div>
-
-  <div class="section-title"><h2>Core priorities</h2><p>Literacy and mathematics appear most often.</p></div>
-  <div class="priority-grid">
-    <button class="priority literacy" onclick="openDomain('reading')"><span>📖</span><b>Phonics & Reading</b><small>Sounds → decoding → fluency → comprehension</small></button>
-    <button class="priority math" onclick="openDomain('math')"><span>🔢</span><b>Mathematical Thinking</b><small>Quantity → composition → operations → reasoning</small></button>
-    <button class="priority language" onclick="openDomain('language')"><span>💬</span><b>Language & Comprehension</b><small>Explain, retell, predict, compare, infer</small></button>
-  </div>
-
-  <div class="section-title"><h2>Story worlds your child recognizes</h2><p>Use familiar princess and fairy scenes to boost attention, vocabulary, and imagination.</p></div>
-  <div id="themeGallery" class="scene-gallery"></div>
-
-  <div class="section-title"><h2>Learning principles built into the app</h2><p>No bogus learning.</p></div>
-  <div class="grid thirds">
-    <div class="card compact"><div class="principle-icon">🎯</div><h3>Clear objective</h3><p>Every mission names the exact skill and observable success criterion.</p></div>
-    <div class="card compact"><div class="principle-icon">🔁</div><h3>Spaced review</h3><p>Learned skills return later instead of disappearing after one good day.</p></div>
-    <div class="card compact"><div class="principle-icon">🪜</div><h3>Adaptive difficulty</h3><p>Support is added when needed and removed as independence increases.</p></div>
+  <div class="home-heading"><div><span class="sakhi-kicker">CHOOSE A WORLD</span><h2>Where should we explore?</h2></div><div class="home-controls"><label class="theme-picker"><span>Adventure</span><select id="themeSelect" aria-label="Adventure theme" onchange="setTheme(this.value)">
+    <option value="unicorn">🦄 Rainbow Unicorn Kingdom</option><option value="ice">❄️ Ice Princess Castle</option><option value="mermaid">🧜‍♀️ Mermaid Ocean Adventure</option><option value="library">🌳 Forest Friends</option><option value="tower">🏰 Princess Garden Castle</option><option value="fairy">🧚 Moon Fairy Garden</option><option value="space">🍭 Cotton Candy Castle</option>
+  </select></label><button class="parent-home-link" data-go="parent" type="button">🔒 Parents</button></div></div>
+  <div class="sakhi-kingdoms">
+    <button data-domain="reading"><span>📚</span><b>Story Kingdom</b><small>Sounds and stories</small></button>
+    <button data-domain="math"><span>🔢</span><b>Number Kingdom</b><small>Count and reason</small></button>
+    <button data-domain="logic"><span>🧩</span><b>Puzzle Palace</b><small>Think and solve</small></button>
+    <button data-domain="science"><span>🔬</span><b>Discovery World</b><small>Wonder and test</small></button>
+    <button data-domain="creativity"><span>🎨</span><b>Create & Play</b><small>Imagine and make</small></button>
   </div>
 </section>
 
@@ -109,18 +83,48 @@
 </section>
 
 <section id="parent" class="view">
-  <div class="section-title"><h2>🔒 Parents</h2><p>Progress is preserved. Family Sync can resume the same learner on another authenticated device.</p></div>
-  <div class="parent-lock-row"><button class="btn soft" onclick="lockSakhiParent()">🔒 Lock Parent Mode</button></div>
-  <div class="grid">
-    <div class="card"><h3>Recommended next focus</h3><div id="nextFocus" class="say"></div><p class="muted">A single successful attempt never marks a skill fully mastered. The app looks for repeated success across days and activity formats.</p></div>
-    <div class="card"><h3>Session guardrails</h3><p><b>Typical session:</b> 15–25 min<br><b>Activity:</b> usually 2–7 min<br><b>Normal practice target:</b> roughly 80–90% success<br><b>When struggling:</b> scaffold<br><b>When repeatedly strong:</b> increase difficulty slightly</p></div>
-  </div>
-  <div class="section-title"><h2>Adaptive skill states</h2><p>Mastery requires durable evidence.</p></div>
-  <div class="state-legend"><span>Not Introduced</span><span>Introduced</span><span>Learning</span><span>Developing</span><span>Mostly Mastered</span><span>Mastered</span><span>Review Needed</span></div>
-  <div class="card"><div id="skillTracker"></div></div>
-  <div class="section-title"><h2>Reading baseline breakdown</h2><p>Individual skill scores matter more than total score.</p></div><div id="breakdown" class="mini-grid"></div>
-  <div class="section-title"><h2>Parent coaching language</h2><p>Correct without shame or guessing.</p></div>
-  <div class="grid thirds"><div class="card compact"><h3>Try again</h3><div class="say">“Almost. Let's try that part again.”</div></div><div class="card compact"><h3>Find the clue</h3><div class="say">“Listen to the first sound.”</div></div><div class="card compact"><h3>Show thinking</h3><div class="say">“Show me how you figured it out.”</div></div></div>
+  <header class="parent-header">
+    <div><span class="badge adult">ADULT AREA</span><h1>Parent Dashboard</h1><p>Progress, learning decisions, settings, and family tools—kept away from the child experience.</p></div>
+    <button class="btn soft" onclick="lockSakhiParent()">🔒 Lock Parent Mode</button>
+  </header>
+  <nav class="parent-tabs" aria-label="Parent dashboard sections">
+    <button class="active" data-parent-panel="overview">Overview</button>
+    <button data-parent-panel="progress">Progress</button>
+    <button data-parent-panel="path">Learning Path</button>
+    <button data-parent-panel="reports">Reports</button>
+    <button data-parent-panel="curriculum">Curriculum</button>
+    <button data-parent-panel="settings">Settings</button>
+  </nav>
+  <section class="parent-panel active" data-parent-content="overview">
+    <div id="placementSlot"></div>
+    <div class="grid">
+      <div class="card"><h3>Recommended next focus</h3><div id="nextFocus" class="say"></div><p class="muted">Mastery requires repeated success across days and activity formats.</p></div>
+      <div class="card"><h3>Session guardrails</h3><p><b>Typical session:</b> 15–25 min<br><b>Activity:</b> 2–7 min<br><b>Practice target:</b> about 80–90% success<br><b>When struggling:</b> add one scaffold<br><b>When consistently strong:</b> increase difficulty slightly</p></div>
+    </div>
+  </section>
+  <section class="parent-panel" data-parent-content="progress" hidden>
+    <div class="section-title"><h2>Adaptive skill states</h2><p>Evidence by domain and skill.</p></div>
+    <div class="state-legend"><span>Not Introduced</span><span>Introduced</span><span>Learning</span><span>Developing</span><span>Mostly Mastered</span><span>Mastered</span><span>Review Needed</span></div>
+    <div class="card"><div id="skillTracker"></div></div>
+    <div class="section-title"><h2>Reading placement</h2><p>Individual skill scores matter more than the total.</p></div>
+    <div id="breakdown" class="mini-grid"></div>
+    <div id="insightsSlot"></div>
+  </section>
+  <section class="parent-panel" data-parent-content="path" hidden><div id="learningPathSlot"></div></section>
+  <section class="parent-panel" data-parent-content="reports" hidden><div id="parentReportsSlot"></div></section>
+  <section class="parent-panel" data-parent-content="curriculum" hidden>
+    <div class="section-title"><h2>Curriculum & placement</h2><p>Adult-guided checks and teaching tools.</p></div>
+    <div class="grid thirds">
+      <div class="card"><h3>Reading baseline</h3><p>A short placement check for sounds, blending, segmenting, and early decoding.</p><button class="btn primary" onclick="go('baseline')">Open baseline</button></div>
+      <div class="card"><h3>Phonics lesson</h3><p>Open the guided first lesson with parent scripts and observation notes.</p><button class="btn mint" onclick="go('lesson')">Open lesson</button></div>
+      <div class="card"><h3>Coaching language</h3><div class="say">“Almost. Let's try that part again.”</div><div class="say">“Show me how you figured it out.”</div></div>
+    </div>
+  </section>
+  <section class="parent-panel" data-parent-content="settings" hidden>
+    <div class="section-title"><h2>Family & app settings</h2><p>Sync, backup, and device controls.</p></div>
+    <div id="familySyncSlot"></div>
+    <div id="dataSafetySlot"></div>
+  </section>
 </section>
 
 <section id="rewards" class="view">
@@ -134,24 +138,22 @@
 
 <nav class="bottom" aria-label="Mobile navigation">
   <button data-go="home" class="active"><span>🏠</span>Home</button>
-  <button data-go="quest"><span>✨</span>Quest</button>
-  <button data-go="learn"><span>🗺️</span>Learn</button>
-  <button data-go="baseline"><span>🔎</span>Read</button>
-  <button data-go="parent"><span>🔒</span>Parents</button>
+  <button data-go="quest"><span>✨</span>Adventure</button>
+  <button data-go="learn"><span>🗺️</span>Kingdoms</button>
   <button data-go="rewards"><span>🌟</span>Rewards</button>
 </nav>
 <div class="toast" id="toast">Saved ✨</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-config.js?v=14"></script>
-<script src="./system-events.js?v=14"></script>
-<script src="./curriculum.js?v=14"></script>
-<script src="./persistence.js?v=14"></script>
-<script src="./speech-service.js?v=14"></script>
-<script src="./app.js?v=14"></script>
-<script src="./interaction-engine.js?v=14"></script>
-<script src="./visuals.js?v=14"></script>
-<script src="./adaptive-engine.js?v=14"></script>
-<script src="./backend-bridge.js?v=14"></script>
-<script src="./sakhi-shell.js?v=14"></script>
+<script src="./supabase-config.js?v=15"></script>
+<script src="./system-events.js?v=15"></script>
+<script src="./curriculum.js?v=15"></script>
+<script src="./persistence.js?v=15"></script>
+<script src="./speech-service.js?v=15"></script>
+<script src="./app.js?v=15"></script>
+<script src="./interaction-engine.js?v=15"></script>
+<script src="./visuals.js?v=15"></script>
+<script src="./adaptive-engine.js?v=15"></script>
+<script src="./backend-bridge.js?v=15"></script>
+<script src="./sakhi-shell.js?v=15"></script>
 </body>
 </html>
