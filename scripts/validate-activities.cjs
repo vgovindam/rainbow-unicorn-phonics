@@ -27,7 +27,25 @@ for(const a of activityStore){
   if(a.difficulty<1||a.difficulty>5)throw new Error(`${a.id}: difficulty outside 1–5`);
   if(a.estimated_minutes<=0)throw new Error(`${a.id}: invalid duration`);
   if(/dragon/i.test(`${a.title} ${a.character_prompt} ${a.character||''}`))throw new Error(`${a.id}: dragon content is not allowed`);
+  const ids=new Set(a.items.map(i=>i.id));
+  if(ids.size!==a.items.length)throw new Error(`${a.id}: duplicate item identifiers`);
+  if(['tap_choice','story_choice'].includes(a.interaction_type)){
+    if(!ids.has(a.correct_answer))throw new Error(`${a.id}: answer is not a selectable item`);
+    if(a.distractors.includes(a.correct_answer))throw new Error(`${a.id}: correct answer appears in distractors`);
+  }
+  if(a.interaction_type==='number_manipulative'){
+    if(!Number.isInteger(a.correct_answer)||a.correct_answer<0||a.correct_answer>a.items.length)throw new Error(`${a.id}: invalid calculated object count`);
+  }
+  if(a.interaction_type==='find_it'){
+    const marked=a.items.filter(i=>i.is_correct).map(i=>i.id).sort();
+    if(JSON.stringify(marked)!==JSON.stringify([...a.correct_answer].sort()))throw new Error(`${a.id}: visual answer flags disagree with correct_answer`);
+  }
 }
+const first=activityStore.find(a=>a.id==='read-first');
+const expectedFirst={moon:'m',map:'m',sun:'s',sock:'s'};
+if(JSON.stringify(first?.correct_answer)!==JSON.stringify(expectedFirst))throw new Error('read-first: controlled phonics mapping is invalid');
+const cvc=activityStore.find(a=>a.id==='read-cvc');
+if(cvc?.correct_answer?.join('')!=='map')throw new Error('read-cvc: validated spelling must build map');
 const formats=new Set(activityStore.map(a=>a.interaction_type));
 if(formats.size<10)throw new Error(`Interaction variety too low: ${[...formats].join(', ')}`);
 if('dragon' in context.themes)throw new Error('Dragon theme was not removed at runtime');

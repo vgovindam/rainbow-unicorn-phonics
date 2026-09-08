@@ -3,5 +3,8 @@
 window.RAINBOW_CONFIG=window.RAINBOW_CONFIG||{
   supabaseUrl:'https://okzmrlrijovbuatjcgqi.supabase.co',
   supabaseAnonKey:'sb_publishable_2rp84hm1GThThM-V5-s4jA_3Z_090ne',
-  ttsEndpoint:'https://okzmrlrijovbuatjcgqi.supabase.co/functions/v1/sakhi-tts'
+  ttsEndpoint:'https://okzmrlrijovbuatjcgqi.supabase.co/functions/v1/sakhi-tts',
+  ttsProvider:'elevenlabs',
+  allowBrowserTtsFallback:false,
+  parentSessionMinutes:15
 };

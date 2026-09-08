@@ -12,7 +12,6 @@
 <link rel="stylesheet" href="./styles.css" />
 <link rel="stylesheet" href="./interactions.css" />
 <link rel="stylesheet" href="./visuals.css" />
-<link rel="stylesheet" href="./kid-upgrade.css" />
 <link rel="stylesheet" href="./sakhi-shell.css" />
 </head>
 <body data-theme="unicorn">
@@ -102,7 +101,7 @@
 
 <section id="lesson" class="view">
   <div class="section-title"><h2>📚 Phonics Day 1 — Missing Rainbow Sounds</h2><p><span class="badge adult">Adult-guided</span> 15–20 minutes</p></div>
-  <div class="card"><div class="kicker">Today's skill</div><h3>/m/, /s/, /t/, /p/, short /a/ + first sounds + early blending</h3><div class="sound-row"><span class="sound">m</span><span class="sound">s</span><span class="sound">t</span><span class="sound">p</span><span class="sound">a</span></div><div class="tip" style="margin-top:12px"><b>Pure sound reminder:</b> /mmmm/ not “muh”; /ssss/ not “suh”; keep /t/ and /p/ quick.</div></div>
+  <div class="card"><div class="kicker">Today's skill</div><h3>/m/, /s/, /t/, /p/, short /a/ + first sounds + early blending</h3><div class="sound-row"><span class="sound">m</span><span class="sound">s</span><span class="sound">t</span><span class="sound">p</span><span class="sound">a</span></div><div class="tip spaced-top"><b>Pure sound reminder:</b> /mmmm/ not “muh”; /ssss/ not “suh”; keep /t/ and /p/ quick.</div></div>
   <div id="lessonSteps"></div>
   <div class="card"><div class="kicker">Parent observation</div><h3>Record what you actually saw</h3><div class="tracker-row"><b>m, s, t, p, a</b><select class="status-select observe" data-key="sounds"><option>Not rated</option><option>Mastered today</option><option>Developing</option><option>Needs more practice</option></select></div><div class="tracker-row"><b>Beginning sounds</b><select class="status-select observe" data-key="begin"><option>Not rated</option><option>Mastered today</option><option>Developing</option><option>Needs more practice</option></select></div><div class="tracker-row"><b>Oral blending</b><select class="status-select observe" data-key="blend"><option>Not rated</option><option>Mastered today</option><option>Developing</option><option>Needs more practice</option></select></div><label><b>Notes</b><textarea id="notes" class="notes" placeholder="Example: m/s easy, t confused, loved jumping, needed help with mat..."></textarea></label></div>
   <div class="row"><button class="btn soft" onclick="go('baseline')">← Baseline</button><button class="btn mint" onclick="go('parent')">Parent Dashboard →</button></div>
@@ -126,7 +125,7 @@
 <section id="rewards" class="view">
   <div class="section-title"><h2>✨ Shiny Star Reward Map</h2><p>Reward effort, thinking, persistence, improvement, and independence.</p></div>
   <div class="card"><div id="rewardGrid" class="reward-grid"></div></div>
-  <div class="grid" style="margin-top:13px"><div class="card"><h3>Praise learning behaviors</h3><div class="say">“You kept trying when the puzzle was tricky.”</div><div class="say">“You checked your work before you answered.”</div><div class="say">“You explained how you figured it out.”</div></div><div class="card"><h3>Do not reward only correctness</h3><p>Magic rewards can recognize careful listening, useful strategies, asking for help, flexible thinking, persistence, and doing something more independently than before.</p></div></div>
+  <div class="grid spaced-top"><div class="card"><h3>Praise learning behaviors</h3><div class="say">“You kept trying when the puzzle was tricky.”</div><div class="say">“You checked your work before you answered.”</div><div class="say">“You explained how you figured it out.”</div></div><div class="card"><h3>Do not reward only correctness</h3><p>Magic rewards can recognize careful listening, useful strategies, asking for help, flexible thinking, persistence, and doing something more independently than before.</p></div></div>
 </section>
 
 <div class="footer">✨ Sakhi Magic Learning · No ads · Family progress can sync securely across devices</div>
@@ -143,14 +142,13 @@
 <div class="toast" id="toast">Saved ✨</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase-config.js"></script>
+<script src="./system-events.js"></script>
 <script src="./curriculum.js"></script>
 <script src="./persistence.js"></script>
 <script src="./speech-service.js"></script>
 <script src="./app.js"></script>
-<script src="./scheduler.js"></script>
 <script src="./interaction-engine.js"></script>
 <script src="./visuals.js"></script>
-<script src="./kid-upgrade.js"></script>
 <script src="./adaptive-engine.js"></script>
 <script src="./backend-bridge.js"></script>
 <script src="./sakhi-shell.js"></script>

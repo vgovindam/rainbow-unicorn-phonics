@@ -68,28 +68,27 @@ const activities=[
 ];
 const rewards=[['🌈','Rainbow Star'],['💎','Unicorn Gem'],['🗝️','Princess Key'],['🔮','Magic Crystal'],['⭐','Courage Badge'],['📖','Reading Spark'],['👑','Math Crown'],['🔬','Science Star'],['🧠','Thinking Gem'],['💛','Kindness Heart'],['🧭','Focus Compass'],['✨','Independent Spark']];
 let data=loadData();
-let currentActivity=null;
 function loadData(){
   const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
   const legacy=JSON.parse(localStorage.getItem('magicPhonics')||'{}');
   const old=Object.keys(saved).length?saved:legacy;
   return {theme:old.theme||'unicorn',answers:old.answers||{},steps:old.steps||{},observe:old.observe||{},notes:old.notes||'',skills:old.skills||{},evidence:old.evidence||{},rewards:old.rewards||{},quest:old.quest||null,questDate:old.questDate||'',questResults:old.questResults||{},questHistory:old.questHistory||[]};
 }
-function persist(show=true){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));updateStats();if(show)toast()}
+function persist(show=true){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));window.RainbowPersistence?.queueSync(data);updateStats();if(show){const t=document.getElementById('toast');if(t)t.textContent=window.RainbowPersistence?.backendStatus().remote?'Saved on this device · syncing…':'Saved on this device';toast()}}
 function toast(){const t=document.getElementById('toast');t.classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.remove('show'),850)}
 function todayKey(){return new Date().toISOString().slice(0,10)}
 function esc(v){return String(v).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]||c))}
-function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='quest')ensureQuest();if(id==='parent'){renderSkillTracker();renderBreakdown();renderNextFocus()}if(id==='learn')renderDomains()}
+function go(id){if(id==='parent'&&window.SakhiParent&&!window.SakhiParent.parentUnlocked()){window.SakhiParent.openParentGate();return;}window.SpeechService?.stop();document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='quest')ensureQuest();if(id==='parent'){renderSkillTracker();renderBreakdown();renderNextFocus();window.SakhiAdaptive?.renderParent();window.AssetService?.renderInsights();window.AssetService?.renderSafetyTools()}if(id==='learn')renderDomains()}
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
-function setTheme(t){data.theme=t;document.body.dataset.theme=t;document.getElementById('themeSelect').value=t;document.getElementById('heroArt').textContent=(themes[t]||themes.unicorn).art;persist(false)}
+function setTheme(t){data.theme=t;document.body.dataset.theme=t;document.getElementById('themeSelect').value=t;document.getElementById('heroArt').textContent=(themes[t]||themes.unicorn).art;persist(false);window.AssetService?.renderHero();window.AssetService?.renderGallery()}
 function skillKey(domain,skill){return `${domain}::${skill}`}
 function getStatus(domain,skill){return data.skills[skillKey(domain,skill)]||'Not Introduced'}
-function setStatus(domain,skill,status,manual=false){data.skills[skillKey(domain,skill)]=status;if(manual)persist()}
+function setStatus(domain,skill,status,manual=false){const key=skillKey(domain,skill),previous=data.skills[key]||'Not Introduced';data.skills[key]=status;if(previous!==status)window.SakhiEvents?.emit('SKILL_STATE_CHANGED',{domain,skill,previous,status,manual});if(manual)persist()}
 function recordEvidence(activity,score){
   const k=skillKey(activity.domain,activity.skill),arr=data.evidence[k]||[];
   arr.push({date:todayKey(),score,activityId:activity.id});
   data.evidence[k]=arr.slice(-12);
-  data.skills[k]=deriveStatus(data.skills[k]||'Not Introduced',data.evidence[k]);
+  const previous=data.skills[k]||'Not Introduced';data.skills[k]=deriveStatus(previous,data.evidence[k]);if(previous!==data.skills[k])window.SakhiEvents?.emit('SKILL_STATE_CHANGED',{domain:activity.domain,skill:activity.skill,previous,status:data.skills[k],manual:false});
   persist(false);renderSkillTracker();
 }
 function deriveStatus(current,arr){
@@ -103,48 +102,9 @@ function deriveStatus(current,arr){
   if(recent.length>=2&&avg>=.55)return 'Learning';
   return 'Introduced';
 }
+window.SakhiMastery={deriveStatus};
 function domainById(id){return domains.find(d=>d.id===id)}
 function activitiesFor(domain){return activities.filter(a=>a.domain===domain)}
-function chooseActivity(domain,offset=0){
-  const list=activitiesFor(domain);if(!list.length)return null;
-  const review=list.find(a=>getStatus(a.domain,a.skill)==='Review Needed');if(review)return review;
-  const unmastered=list.filter(a=>getStatus(a.domain,a.skill)!=='Mastered');
-  const pool=unmastered.length?unmastered:list;
-  const completed=Object.keys(data.evidence).reduce((n,k)=>n+(k.startsWith(domain+'::')?(data.evidence[k]||[]).length:0),0);
-  return pool[(completed+offset)%pool.length];
-}
-function makeQuest(){
-  const rotate=['language','logic','science','memory','sel','executive','life','knowledge'];
-  const move=['writing','creativity','fine','gross'];
-  const day=Math.floor(Date.now()/86400000);
-  const ids=[chooseActivity('reading'),chooseActivity('math'),chooseActivity(rotate[day%rotate.length]),chooseActivity(move[day%move.length])].filter(Boolean).map(a=>a.id);
-  data.quest=ids;data.questDate=todayKey();data.questResults={};persist(false);renderQuest();
-}
-function ensureQuest(){if(!data.quest||data.questDate!==todayKey())makeQuest();else renderQuest()}
-function refreshQuest(){makeQuest();toast()}
-function renderQuest(){
-  document.getElementById('questDate').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});
-  document.getElementById('questTitle').textContent=(themes[data.theme]||themes.unicorn).title+' Quest';
-  const h=document.getElementById('questCards');h.innerHTML='';
-  (data.quest||[]).forEach((id,i)=>{const a=activities.find(x=>x.id===id);if(!a)return;const done=data.questResults[id]!=null,d=document.createElement('button');d.className='quest-card '+(done?'done':'');d.onclick=()=>runActivity(id);d.innerHTML=`<span class="quest-num">${done?'✓':i+1}</span><span class="quest-icon">${a.icon}</span><span class="quest-copy"><small>${domainById(a.domain).title} · ${a.minutes} min</small><b>${a.title}</b><em>${a.objective}</em></span><span class="quest-arrow">›</span>`;h.appendChild(d)});
-  updateStats();
-}
-function runActivity(id){currentActivity=activities.find(x=>x.id===id);if(!currentActivity)return;const a=currentActivity,runner=document.getElementById('activityRunner');runner.classList.add('active');
-  const choice=a.type==='choice'?`<div class="activity-prompt">${a.prompt}</div><div class="choices">${a.choices.map(c=>`<button class="choice" onclick="answerActivity(this,${JSON.stringify(c)})">${c}</button>`).join('')}</div><div id="activityFeedback" class="game-feedback"></div>`:`<div class="activity-prompt coach-prompt">${a.prompt}</div><div class="rating"><button onclick="rateActivity(1)">✨ Independent</button><button onclick="rateActivity(.6)">🤝 With help</button><button onclick="rateActivity(.2)">🌱 Not yet</button></div>`;
-  runner.innerHTML=`<div class="runner-head"><div><span class="badge kid">${a.icon} ${domainById(a.domain).title}</span><h3>${a.title}</h3></div><button class="btn sm" onclick="closeActivity()">Close</button></div><div class="objective-box"><b>Learning objective</b><span>${a.objective}</span></div>${choice}<details class="coach-note"><summary>🧑 Parent coaching note</summary><p><b>Target skill:</b> ${a.skill}</p><p><b>Why this activity:</b> ${a.reason}</p><p><b>Materials:</b> ${a.materials}</p><p><b>What to do/say:</b> ${a.parent}</p><p><b>Success looks like:</b> ${a.success}</p><p><b>If easy:</b> ${a.extension}</p></details>`;
-  runner.scrollIntoView({behavior:'smooth',block:'start'});
-}
-function answerActivity(btn,val){const a=currentActivity;if(!a)return;const buttons=[...document.querySelectorAll('#activityRunner .choice')];buttons.forEach(b=>b.disabled=true);const ok=val===a.answer;if(ok){btn.classList.add('correct');document.getElementById('activityFeedback').textContent='✨ Yes! Now tell your grown-up how you knew.';completeActivity(a,1)}else{btn.classList.add('wrong');const right=buttons.find(b=>b.textContent===a.answer);if(right)right.classList.add('correct');document.getElementById('activityFeedback').textContent='🌈 Nice try. Use the clue and try the thinking again.';completeActivity(a,.35)}}
-function rateActivity(score){if(!currentActivity)return;completeActivity(currentActivity,score);document.getElementById('activityRunner').insertAdjacentHTML('beforeend','<div class="completion">✨ Mission recorded. Effort and strategy count too.</div>')}
-function completeActivity(a,score){recordEvidence(a,score);data.questResults[a.id]=score;data.questHistory.push({date:todayKey(),activityId:a.id,score});data.questHistory=data.questHistory.slice(-80);persist(false);renderQuest();awardAuto(score,a)}
-function awardAuto(score,a){if(score>=.9){const idx=a.domain==='math'?6:a.domain==='science'?7:a.domain==='reading'?5:score>=1?0:4;data.rewards['reward'+idx]=true;persist(false);renderRewards()}}
-function closeActivity(){document.getElementById('activityRunner').classList.remove('active');document.getElementById('activityRunner').innerHTML='';currentActivity=null}
-function renderDomains(){const h=document.getElementById('domainGrid');h.innerHTML='';domains.forEach(d=>{const mastered=d.skills.filter(s=>getStatus(d.id,s)==='Mastered').length,b=document.createElement('button');b.className='domain-card';b.onclick=()=>openDomain(d.id);b.innerHTML=`<span class="domain-icon">${d.icon}</span><span class="domain-copy"><small>${d.priority||'Rotating domain'}</small><b>${d.title}</b><em>${d.desc}</em><span class="domain-progress">${mastered}/${d.skills.length} mastered</span></span>`;h.appendChild(b)})}
-function openDomain(id){go('learn');const d=domainById(id),h=document.getElementById('domainDetail');if(!d)return;const acts=activitiesFor(id);h.innerHTML=`<div class="section-title"><h2>${d.icon} ${d.title}</h2><p>${d.desc}</p></div><div class="card"><h3>Skill progression</h3><div class="skill-chip-wrap">${d.skills.map(s=>`<span class="skill-chip ${slug(getStatus(d.id,s))}">${esc(s)}<small>${getStatus(d.id,s)}</small></span>`).join('')}</div></div><div class="section-title"><h2>Purposeful activities</h2><p>Every activity shows objective, reason and success criterion.</p></div><div class="activity-grid">${acts.map(a=>`<button class="activity" onclick="runLearningActivity('${a.id}')"><span class="big">${a.icon}</span><b>${a.title}</b><p>${a.objective}</p><small>${a.minutes} min · ${a.skill}</small></button>`).join('')||'<div class="card">Activities for this domain will rotate through daily quests.</div>'}</div><div id="learnRunner" class="card runner"></div>`;h.scrollIntoView({behavior:'smooth'});
-}
-function runLearningActivity(id){const target=document.getElementById('learnRunner');currentActivity=activities.find(x=>x.id===id);if(!currentActivity||!target)return;const a=currentActivity;target.classList.add('active');const choice=a.type==='choice'?`<div class="activity-prompt">${a.prompt}</div><div class="choices">${a.choices.map(c=>`<button class="choice" onclick="answerLearnActivity(this,${JSON.stringify(c)})">${c}</button>`).join('')}</div><div id="learnFeedback" class="game-feedback"></div>`:`<div class="activity-prompt coach-prompt">${a.prompt}</div><div class="rating"><button onclick="rateLearnActivity(1)">✨ Independent</button><button onclick="rateLearnActivity(.6)">🤝 With help</button><button onclick="rateLearnActivity(.2)">🌱 Not yet</button></div>`;target.innerHTML=`<div class="runner-head"><div><span class="badge kid">${a.icon} ${a.skill}</span><h3>${a.title}</h3></div><button class="btn sm" onclick="this.closest('.runner').classList.remove('active')">Close</button></div><div class="objective-box"><b>Objective</b><span>${a.objective}</span></div>${choice}<details class="coach-note" open><summary>🧑 Parent coaching note</summary><p><b>Why:</b> ${a.reason}</p><p><b>Materials:</b> ${a.materials}</p><p><b>Coach:</b> ${a.parent}</p><p><b>Success:</b> ${a.success}</p><p><b>Extension:</b> ${a.extension}</p></details>`;target.scrollIntoView({behavior:'smooth'})}
-function answerLearnActivity(btn,val){const a=currentActivity,buttons=[...document.querySelectorAll('#learnRunner .choice')];buttons.forEach(b=>b.disabled=true);const ok=val===a.answer;btn.classList.add(ok?'correct':'wrong');if(!ok){const right=buttons.find(b=>b.textContent===a.answer);if(right)right.classList.add('correct')}document.getElementById('learnFeedback').textContent=ok?'✨ Yes! Explain how you knew.':'🌈 Use the clue and think again.';recordEvidence(a,ok?1:.35)}
-function rateLearnActivity(score){recordEvidence(currentActivity,score);document.getElementById('learnRunner').insertAdjacentHTML('beforeend','<div class="completion">✨ Practice recorded.</div>')}
 function slug(s){return s.toLowerCase().replace(/[^a-z]+/g,'-')}
 function renderAssessment(){const h=document.getElementById('assessment');h.innerHTML='';groups.forEach(g=>{const c=document.createElement('div');c.className='card';c.style.marginTop='12px';let s=`<div class="kicker">${g.title}</div><h3>${g.help}</h3>`;g.items.forEach((it,i)=>{const k=`${g.id}-${i}`,v=data.answers[k];s+=`<div class="question"><div><div class="qtext">${esc(it[0])}</div><div class="qsub">Expected: ${esc(it[1])}</div></div><div class="score-buttons"><button class="yes ${v===1?'active':''}" onclick="answerBaseline('${k}',1)">✓</button><button class="no ${v===0?'active':''}" onclick="answerBaseline('${k}',0)">×</button></div></div>`});c.innerHTML=s;h.appendChild(c)});updateBaselineScore()}
 function answerBaseline(k,v){data.answers[k]=v;syncBaselineSkills();persist(false);renderAssessment();renderBreakdown();renderNextFocus()}
@@ -163,7 +123,10 @@ function renderRewards(){const h=document.getElementById('rewardGrid');h.innerHT
 function renderNextFocus(){const el=document.getElementById('nextFocus');if(!el)return;const st=readingStage(),due=findReviewNeeded();let msg=st[1];if(data.observe.blend==='Needs more practice')msg='Blending appears to be the current bottleneck. Keep the same small sound set and use a different oral blending game before adding many new patterns.';else if(due.length)msg=`Spaced review is due for ${due.slice(0,3).map(x=>x.skill).join(', ')}. Mix one of these into the next quest while keeping literacy and math central.`;el.textContent=msg}
 function findReviewNeeded(){const out=[];Object.entries(data.skills).forEach(([k,status])=>{if(status==='Review Needed'){const [domain,skill]=k.split('::');out.push({domain,skill})}});return out}
 function updateStats(){const mastered=Object.values(data.skills).filter(s=>s==='Mastered').length,done=(data.quest||[]).filter(id=>data.questResults[id]!=null).length;document.getElementById('baseStat').textContent=baselineTotal()+'/33';document.getElementById('masteredStat').textContent=mastered;document.getElementById('questStat').textContent=`${done}/${(data.quest||[]).length||4}`;document.getElementById('rewardStat').textContent=Object.values(data.rewards).filter(Boolean).length;updateBaselineScore();renderNextFocus()}
-document.querySelectorAll('.observe').forEach(s=>{s.value=data.observe[s.dataset.key]||'Not rated';s.addEventListener('change',()=>{data.observe[s.dataset.key]=s.value;persist();renderNextFocus()})});
-const notes=document.getElementById('notes');notes.value=data.notes;notes.addEventListener('input',()=>{data.notes=notes.value;persist(false)});notes.addEventListener('change',toast);
-setTheme(data.theme);renderAssessment();renderLesson();renderDomains();renderSkillTracker();renderRewards();renderBreakdown();ensureQuest();updateStats();
+function initializeApp(){
+ document.querySelectorAll('.observe').forEach(s=>{s.value=data.observe[s.dataset.key]||'Not rated';s.addEventListener('change',()=>{data.observe[s.dataset.key]=s.value;persist();renderNextFocus()})});
+ const notes=document.getElementById('notes');notes.value=data.notes;notes.addEventListener('input',()=>{data.notes=notes.value;persist(false)});notes.addEventListener('change',toast);
+ setTheme(data.theme);renderAssessment();renderLesson();renderDomains();renderSkillTracker();renderRewards();renderBreakdown();ensureQuest();updateStats();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initializeApp,{once:true});else initializeApp();
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));

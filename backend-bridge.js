@@ -15,19 +15,7 @@ async function boot(){
   renderFamilySync();
  }catch(e){console.warn('Family sync unavailable',e);renderFamilySync(String(e.message||e));}
 }
-const oldPersist=window.persist;
-window.persist=function(show=true){oldPersist(show);P.queueSync(data)};
-if(typeof recordInteractionEvent==='function'){
- const oldRecord=window.recordInteractionEvent;
- window.recordInteractionEvent=function(type,extra={}){
-   const r=typeof interactionRuntime!=='undefined'?interactionRuntime:null;
-   oldRecord(type,extra);
-   if(r&&['success','not_yet'].includes(type)){
-     const evt={event_id:P.uuid(),type,attempts:r.attempts,hintLevel:r.hintLevel,elapsed:Math.round((Date.now()-r.startedAt)/1000),timestamp:new Date().toISOString(),...extra};
-     P.appendAttempt(evt,r.activity).catch(console.warn);
-   }
- };
-}
+window.addEventListener('sakhi:system',event=>{const t=document.getElementById('toast');if(!t)return;if(event.detail.type==='PROGRESS_SAVE_SUCCESS'){t.textContent='Saved securely ✨';toast();}if(event.detail.type==='PROGRESS_SAVE_FAILED'){t.textContent='Saved on this device · sync will retry';toast();}});
 function renderFamilySync(error=''){
  const parent=document.getElementById('parent');if(!parent)return;
  let card=document.getElementById('familySyncCard');if(!card){card=document.createElement('div');card.id='familySyncCard';card.className='card family-sync';const lockRow=parent.querySelector('.parent-lock-row');(lockRow||parent.querySelector('.section-title'))?.after(card)}

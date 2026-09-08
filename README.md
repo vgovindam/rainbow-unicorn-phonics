@@ -1,23 +1,31 @@
-# Rainbow Magic Learning Adventure
+# Sakhi Magic Learning
 
-A mobile-first, parent-guided educational web app for a 5-year-old learner. It began as a phonics app and now includes a mastery-based whole-child learning system while keeping foundational literacy and mathematics as the highest priorities.
+Sakhi Magic Learning is a touch-first, adaptive learning PWA for a five-year-old learner. It combines literacy and mathematics with language, logic, science, memory, executive function, social-emotional learning, life skills, creativity, and movement.
 
-## Educational model
+## Run locally
 
-- 15–25 minute sessions with short 2–7 minute activities
-- literacy + mathematics in the daily core
-- rotating language, logic, science, memory, executive-function, social-emotional, practical-life, creativity, motor and general-knowledge activities
-- every activity includes a learning objective, target skill, educational reason, materials, parent coaching, observable success criterion and optional extension
-- adaptive skill states: Not Introduced, Introduced, Learning, Developing, Mostly Mastered, Mastered, Review Needed
-- mastery requires repeated evidence rather than one successful attempt
-- constructive scaffolding and gradual difficulty changes
-- reading baseline for letter sounds, vowels, phonemic awareness, blending, segmenting and CVC decoding
-- local-only progress storage; no account, ads, microphone, camera, or child-data upload
+Serve the repository root with any static HTTP server. For example:
 
-## Themes
+```sh
+python3 -m http.server 4173
+```
 
-Original motivational themes include Rainbow Unicorn Kingdom, Ice Princess Castle, Mermaid Ocean Adventure, Enchanted Library, Tower Princess Adventure, Fairy Garden, Dragon Rescue and Space Princess. The public project intentionally avoids official Disney artwork/branding.
+Then open `http://localhost:4173`.
 
-## Hosting
+## Validation
 
-Static PWA hosted with GitHub Pages. All core files are in the repository root.
+```sh
+node scripts/validate-activities.cjs
+node --test tests/remediation.test.cjs
+```
+
+The tests validate activity contracts and educational answer invariants, neural-vs-browser speech selection, parent-passcode hashing and expiry, curriculum prerequisites, asset references, and production JavaScript syntax.
+
+## Hosting and data
+
+- Front end: static PWA on GitHub Pages.
+- Durable learner data: Supabase when a parent authenticates; browser storage is an offline cache and migration source.
+- Narration: the protected Supabase `sakhi-tts` Edge Function, configured for ElevenLabs. Browser TTS is disabled unless explicitly enabled in configuration.
+- Art: the application-owned Sakhi scene atlas with centralized metadata and graceful visual fallback.
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for source-of-truth boundaries and failure behavior.

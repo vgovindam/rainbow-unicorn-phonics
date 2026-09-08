@@ -3,15 +3,23 @@
 
 const PARENT_HASH='8578956985bec6d251df470861420ae371eed8fb6e1f873014b2715f9327dbcc';
 const SESSION_KEY='sakhiParentUnlocked';
+const SESSION_TIME_KEY='sakhiParentUnlockedAt';
 
 async function sha256(v){
   const data=new TextEncoder().encode(v);
   const hash=await crypto.subtle.digest('SHA-256',data);
   return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
+async function verifyPasscode(value){return (await sha256(String(value||'').trim()))===PARENT_HASH;}
 
-function parentUnlocked(){return sessionStorage.getItem(SESSION_KEY)==='1';}
-function lockParent(){sessionStorage.removeItem(SESSION_KEY);}
+function parentUnlocked(){
+  const started=Number(sessionStorage.getItem(SESSION_TIME_KEY)||0);
+  const minutes=Number(window.RAINBOW_CONFIG?.parentSessionMinutes||15);
+  const valid=sessionStorage.getItem(SESSION_KEY)==='1'&&Date.now()-started<minutes*60000;
+  if(!valid)lockParent();
+  return valid;
+}
+function lockParent(){sessionStorage.removeItem(SESSION_KEY);sessionStorage.removeItem(SESSION_TIME_KEY);}
 
 function ensureParentGate(){
   if(document.getElementById('parentGate'))return;
@@ -34,10 +42,10 @@ function ensureParentGate(){
     const val=gate.querySelector('#parentPasscode').value.trim();
     const msg=gate.querySelector('#parentGateMsg');
     if(!val){msg.textContent='Enter the passcode.';return;}
-    const ok=(await sha256(val))===PARENT_HASH;
-    if(!ok){msg.textContent='That passcode did not match.';gate.querySelector('#parentPasscode').select();return;}
-    sessionStorage.setItem(SESSION_KEY,'1'); close();
-    if(typeof window.__sakhiGo==='function')window.__sakhiGo('parent');
+    const ok=await verifyPasscode(val);
+    if(!ok){window.SakhiEvents?.emit('AUTH_FAILURE',{area:'parent'});msg.textContent='That passcode did not match.';gate.querySelector('#parentPasscode').select();return;}
+    sessionStorage.setItem(SESSION_KEY,'1');sessionStorage.setItem(SESSION_TIME_KEY,String(Date.now()));window.SakhiEvents?.emit('PARENT_UNLOCK',{expiresInMinutes:Number(window.RAINBOW_CONFIG?.parentSessionMinutes||15)});close();
+    if(typeof window.go==='function')window.go('parent');
   };
   gate.querySelector('#parentPasscode').addEventListener('keydown',e=>{if(e.key==='Enter')gate.querySelector('#parentUnlockBtn').click();});
 }
@@ -48,7 +56,8 @@ function openParentGate(){
   setTimeout(()=>document.getElementById('parentPasscode')?.focus(),30);
 }
 window.openParentGate=openParentGate;
-window.lockSakhiParent=()=>{lockParent(); if(typeof window.__sakhiGo==='function')window.__sakhiGo('home');};
+window.lockSakhiParent=()=>{lockParent();if(typeof window.go==='function')window.go('home');};
+window.SakhiParent={parentUnlocked,openParentGate,lock:lockParent,verifyPasscode};
 
 function ensureFamilySyncCard(){
  const parent=document.getElementById('parent');if(!parent||document.getElementById('familySyncCard'))return;
@@ -82,8 +91,8 @@ function simplifyHome(){
       <button data-kind="creativity"><span>🎨</span><b>Create & Play</b></button>
     </div>`;
    home.prepend(intro);
-   intro.querySelector('.sakhi-start').onclick=()=>window.__sakhiGo?.('quest');
-   intro.querySelectorAll('[data-kind]').forEach(b=>b.onclick=()=>{const d=b.dataset.kind;if(typeof openDomain==='function'){window.__sakhiGo?.('learn');setTimeout(()=>openDomain(d),40);}});
+   intro.querySelector('.sakhi-start').onclick=()=>window.go?.('quest');
+   intro.querySelectorAll('[data-kind]').forEach(b=>b.onclick=()=>{const d=b.dataset.kind;if(typeof openDomain==='function'){window.go?.('learn');setTimeout(()=>openDomain(d),40);}});
  }
 }
 
@@ -98,16 +107,6 @@ function rebrand(){
  const parentTitle=document.querySelector('#parent .section-title h2');if(parentTitle)parentTitle.textContent='🔒 Parents';
 }
 
-function installParentGuard(){
- const base=window.go; if(typeof base!=='function')return;
- window.__sakhiGo=base;
- window.go=function(id){
-   if(id==='parent'&&!parentUnlocked()){openParentGate();return;}
-   return base(id);
- };
- document.querySelectorAll('[data-go="parent"]').forEach(b=>{b.onclick=e=>{e.preventDefault();window.go('parent');};});
-}
-
-function init(){rebrand();installParentGuard();simplifyHome();ensureParentGate();ensureFamilySyncCard();}
+function init(){rebrand();simplifyHome();ensureParentGate();ensureFamilySyncCard();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
