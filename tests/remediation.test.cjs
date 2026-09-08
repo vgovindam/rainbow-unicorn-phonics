@@ -103,7 +103,7 @@ test('Persistence always records a pending snapshot before remote sync', () => {
 
 test('Active source has one controlled browser-TTS boundary and no missing HQ assets', () => {
   const html=source('index.html');
-  const active=[...html.matchAll(/<script src="\.\/(.+?\.js)"/g)].map(x=>x[1]);
+  const active=[...html.matchAll(/<script src="\.\/(.+?\.js)(?:\?[^\"]+)?"/g)].map(x=>x[1]);
   const direct=[];
   for(const file of active){const text=source(file);if(/speechSynthesis\.speak|new SpeechSynthesisUtterance/.test(text))direct.push(file);assert.doesNotMatch(text,/assets\/hq/);}
   assert.deepEqual(direct,['speech-service.js']);
@@ -112,7 +112,7 @@ test('Active source has one controlled browser-TTS boundary and no missing HQ as
 
 test('Every production script is syntactically valid', () => {
   const html=source('index.html');
-  const active=[...html.matchAll(/<script src="\.\/(.+?\.js)"/g)].map(x=>x[1]);
+  const active=[...html.matchAll(/<script src="\.\/(.+?\.js)(?:\?[^\"]+)?"/g)].map(x=>x[1]);
   for(const file of active)new vm.Script(source(file),{filename:file});
 });
 
