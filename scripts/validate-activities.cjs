@@ -17,11 +17,14 @@ vm.createContext(context);
 vm.runInContext(source,context,{filename:'interaction-engine.js'});
 
 const allowed=new Set(['tap_choice','multi_select','drag_drop','sort','match','memory','sequence','word_builder','number_manipulative','pattern_builder','find_it','trace','story_choice','movement','offline_activity']);
-const required=['interaction_type','instruction_text','spoken_instruction','character_prompt','items','targets','correct_answer','distractors','hint_1','hint_2','hint_3','success_feedback','retry_feedback','mastery_signal','difficulty','estimated_minutes'];
+const required=['activity_id','skill_id','prerequisite_ids','learning_objective','audio_assets','visual_assets','validation_status','interaction_type','instruction_text','spoken_instruction','character_prompt','items','targets','correct_answer','distractors','hint_1','hint_2','hint_3','success_feedback','retry_feedback','mastery_signal','difficulty','estimated_minutes'];
 if(activityStore.length<12)throw new Error(`Expected a substantial activity library; found ${activityStore.length}`);
 for(const a of activityStore){
   if(!allowed.has(a.interaction_type))throw new Error(`${a.id}: invalid interaction_type ${a.interaction_type}`);
   for(const k of required){if(a[k]===undefined||a[k]===null)throw new Error(`${a.id}: missing ${k}`)}
+  if(a.activity_id!==a.id)throw new Error(`${a.id}: activity_id must match id`);
+  if(a.validation_status!=='verified')throw new Error(`${a.id}: activity is not verified`);
+  if(!Array.isArray(a.prerequisite_ids)||!Array.isArray(a.audio_assets)||!Array.isArray(a.visual_assets))throw new Error(`${a.id}: asset and prerequisite registries must be arrays`);
   if(!Array.isArray(a.items)||!Array.isArray(a.targets)||!Array.isArray(a.distractors))throw new Error(`${a.id}: items/targets/distractors must be arrays`);
   if(!['movement','offline_activity'].includes(a.interaction_type)&&a.items.length===0)throw new Error(`${a.id}: child activity has no interactive items`);
   if(a.difficulty<1||a.difficulty>5)throw new Error(`${a.id}: difficulty outside 1–5`);

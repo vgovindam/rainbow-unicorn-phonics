@@ -7,13 +7,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Sakhi Magic Learning" />
-<meta name="sakhi-revision" content="15" />
+<meta name="sakhi-revision" content="16" />
 <title>Sakhi Magic Learning</title>
-<link rel="manifest" href="./manifest.json?v=15" />
-<link rel="stylesheet" href="./styles.css?v=15" />
-<link rel="stylesheet" href="./interactions.css?v=15" />
-<link rel="stylesheet" href="./visuals.css?v=15" />
-<link rel="stylesheet" href="./sakhi-shell.css?v=15" />
+<link rel="manifest" href="./manifest.json?v=16" />
+<link rel="stylesheet" href="./styles.css?v=16" />
+<link rel="stylesheet" href="./interactions.css?v=16" />
+<link rel="stylesheet" href="./visuals.css?v=16" />
+<link rel="stylesheet" href="./sakhi-shell.css?v=16" />
 </head>
 <body data-theme="unicorn">
 <main class="shell">
@@ -93,10 +93,12 @@
     <button data-parent-panel="path">Learning Path</button>
     <button data-parent-panel="reports">Reports</button>
     <button data-parent-panel="curriculum">Curriculum</button>
+    <button data-parent-panel="review">Content Review</button>
     <button data-parent-panel="settings">Settings</button>
   </nav>
   <section class="parent-panel active" data-parent-content="overview">
     <div id="placementSlot"></div>
+    <div id="masterySummary" class="mastery-summary" aria-live="polite"></div>
     <div class="grid">
       <div class="card"><h3>Recommended next focus</h3><div id="nextFocus" class="say"></div><p class="muted">Mastery requires repeated success across days and activity formats.</p></div>
       <div class="card"><h3>Session guardrails</h3><p><b>Typical session:</b> 15–25 min<br><b>Activity:</b> 2–7 min<br><b>Practice target:</b> about 80–90% success<br><b>When struggling:</b> add one scaffold<br><b>When consistently strong:</b> increase difficulty slightly</p></div>
@@ -120,8 +122,18 @@
       <div class="card"><h3>Coaching language</h3><div class="say">“Almost. Let's try that part again.”</div><div class="say">“Show me how you figured it out.”</div></div>
     </div>
   </section>
+  <section class="parent-panel" data-parent-content="review" hidden>
+    <div class="section-title"><h2>Content review</h2><p>Verified answers, distractors, audio, visuals, and curriculum links.</p></div>
+    <div id="contentReview"></div>
+  </section>
   <section class="parent-panel" data-parent-content="settings" hidden>
     <div class="section-title"><h2>Family & app settings</h2><p>Sync, backup, and device controls.</p></div>
+    <div class="card audio-health-card">
+      <div class="audio-health-head"><div><span class="badge adult">Audio diagnostics</span><h3>Sakhi voice health</h3><p>Runs a real ElevenLabs request and plays the returned audio.</p></div><button class="btn primary" id="runAudioHealth" type="button">Run voice check</button></div>
+      <div id="audioHealthStatus" class="audio-health-status" aria-live="polite">Not checked on this device.</div>
+      <dl id="audioHealthMetrics" class="audio-health-metrics"></dl>
+      <p class="muted">Phoneme clips remain disabled until each pure sound has been manually validated; activity instructions and words use natural narration.</p>
+    </div>
     <div id="familySyncSlot"></div>
     <div id="dataSafetySlot"></div>
   </section>
@@ -144,16 +156,16 @@
 </nav>
 <div class="toast" id="toast">Saved ✨</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-config.js?v=15"></script>
-<script src="./system-events.js?v=15"></script>
-<script src="./curriculum.js?v=15"></script>
-<script src="./persistence.js?v=15"></script>
-<script src="./speech-service.js?v=15"></script>
-<script src="./app.js?v=15"></script>
-<script src="./interaction-engine.js?v=15"></script>
-<script src="./visuals.js?v=15"></script>
-<script src="./adaptive-engine.js?v=15"></script>
-<script src="./backend-bridge.js?v=15"></script>
-<script src="./sakhi-shell.js?v=15"></script>
+<script src="./supabase-config.js?v=16"></script>
+<script src="./system-events.js?v=16"></script>
+<script src="./curriculum.js?v=16"></script>
+<script src="./persistence.js?v=16"></script>
+<script src="./speech-service.js?v=16"></script>
+<script src="./app.js?v=16"></script>
+<script src="./interaction-engine.js?v=16"></script>
+<script src="./visuals.js?v=16"></script>
+<script src="./adaptive-engine.js?v=16"></script>
+<script src="./backend-bridge.js?v=16"></script>
+<script src="./sakhi-shell.js?v=16"></script>
 </body>
 </html>

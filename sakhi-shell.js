@@ -90,6 +90,21 @@ function bindParentTabs(){
  showParentPanel('overview');
 }
 
-function init(){ensureParentGate();ensureFamilySyncCard();bindKingdoms();bindParentTabs();}
+function safe(value){return String(value??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));}
+function renderContentReview(){
+ const slot=document.getElementById('contentReview'),registry=window.SakhiActivityRegistry;if(!slot)return;
+ if(!registry){slot.innerHTML='<div class="card">Activity registry has not loaded.</div>';return;}
+ const rejected=registry.rejected||[],activities=registry.activities||[];
+ slot.innerHTML=`<div class="review-summary ${rejected.length?'review-failed':'review-passed'}"><b>${rejected.length?'Review required':'All registered activities passed validation'}</b><span>${activities.length} verified · ${rejected.length} rejected</span></div><div class="content-review-list">${activities.map(a=>{const answer=typeof a.correct_answer==='object'?JSON.stringify(a.correct_answer):String(a.correct_answer);return `<details class="review-activity"><summary><span>${safe(a.title||a.activity_id)}</span><small>${safe(a.skill_id)} · ${safe(a.validation_status)}</small></summary><dl><dt>Objective</dt><dd>${safe(a.learning_objective)}</dd><dt>Correct answer</dt><dd>${safe(answer)}</dd><dt>Distractors</dt><dd>${safe((a.distractors||[]).join(', ')||'None')}</dd><dt>Audio assets</dt><dd>${safe((a.audio_assets||[]).join(', ')||'Dynamic validated narration')}</dd><dt>Visual assets</dt><dd>${safe((a.visual_assets||[]).join(', ')||'None')}</dd><dt>Prerequisites</dt><dd>${safe((a.prerequisite_ids||[]).join(', ')||'None')}</dd></dl></details>`;}).join('')}</div>`;
+}
+function renderAudioMetrics(result){
+ const status=document.getElementById('audioHealthStatus'),metrics=document.getElementById('audioHealthMetrics');if(!status||!metrics)return;
+ status.className=`audio-health-status ${result.ok?'healthy':'failed'}`;status.textContent=result.ok?'Voice check passed and audio played.':`${result.code||'AUDIO_FAILURE'}: ${result.message||'Voice check failed.'}`;
+ const rows=[['Provider',result.provider],['Voice',result.voiceName||result.voiceId],['Model',result.model],['HTTP',result.httpStatus],['Latency',result.latencyMs!=null?`${result.latencyMs} ms`:null],['Audio',result.bytes!=null?`${result.bytes} bytes`:null],['Cache',result.cache],['Checked',result.checkedAt]];
+ metrics.innerHTML=rows.filter(([,v])=>v!==undefined&&v!==null&&v!=='').map(([k,v])=>`<div><dt>${safe(k)}</dt><dd>${safe(v)}</dd></div>`).join('');
+}
+function bindAudioHealth(){const button=document.getElementById('runAudioHealth');if(!button)return;button.addEventListener('click',async()=>{button.disabled=true;button.textContent='Checking…';renderAudioMetrics({ok:true,provider:'elevenlabs',voiceName:'Validating voice…'});const result=await window.SpeechService?.healthCheck({play:true})||{ok:false,code:'ELEVENLABS_CONFIGURATION_FAILURE',message:'Speech service is unavailable.'};renderAudioMetrics(result);button.disabled=false;button.textContent='Run voice check';});}
+
+function init(){ensureParentGate();ensureFamilySyncCard();bindKingdoms();bindParentTabs();renderContentReview();bindAudioHealth();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

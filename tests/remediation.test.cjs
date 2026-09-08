@@ -31,9 +31,9 @@ function speechContext({ token = true, fallback = false, fetchImpl } = {}) {
   return {context,events,get browserCalls(){return browserCalls;}};
 }
 
-test('SpeechService uses authenticated neural audio without browser TTS', async () => {
+test('SpeechService uses the app-key-protected neural endpoint without requiring a learner session', async () => {
   let requests=0;
-  const h=speechContext({fetchImpl:async(url,options)=>{requests++;assert.match(options.headers.authorization,/Bearer test-token/);return {ok:true,headers:{get:()=> 'audio/mpeg'},blob:async()=>({size:10})};}});
+  const h=speechContext({token:false,fetchImpl:async(url,options)=>{requests++;assert.equal(options.headers.apikey,'public');assert.equal(options.headers.authorization,undefined);return {ok:true,status:200,headers:{get:name=>name==='content-type'?'audio/mpeg':name==='x-sakhi-model'?'eleven_flash_v2_5':null},blob:async()=>({size:10,type:'audio/mpeg'})};}});
   assert.equal(await h.context.window.SpeechService.speakInstruction('Hello'),true);
   assert.equal(requests,1);
   assert.equal(h.browserCalls,0);
@@ -86,7 +86,7 @@ test('Mastery requires repeated evidence across days and formats', () => {
   const derive=window.SakhiMastery.deriveStatus;
   assert.equal(derive('Not Introduced',[{date:'2026-09-01',score:1,activityId:'one'}]),'Introduced');
   assert.notEqual(derive('Developing',Array.from({length:5},()=>({date:'2026-09-01',score:1,activityId:'one'}))),'Mastered');
-  assert.equal(derive('Developing',[{date:'2026-09-01',score:1,activityId:'one'},{date:'2026-09-01',score:.9,activityId:'two'},{date:'2026-09-02',score:1,activityId:'one'},{date:'2026-09-02',score:.9,activityId:'two'},{date:'2026-09-03',score:1,activityId:'one'}]),'Mastered');
+  assert.equal(derive('Developing',[{date:'2026-09-01',score:1,activityId:'one'},{date:'2026-09-01',score:.9,activityId:'two'},{date:'2026-09-02',score:1,activityId:'one'},{date:'2026-09-02',score:.9,activityId:'two'},{date:'2026-09-03',score:1,activityId:'one'},{date:'2026-09-03',score:.9,activityId:'two'}]),'Mastered');
   assert.equal(derive('Mastered',[{date:'2026-09-03',score:.3,activityId:'one'},{date:'2026-09-04',score:.4,activityId:'two'}]),'Review Needed');
 });
 
@@ -147,10 +147,33 @@ test('Child navigation exposes only four child destinations', () => {
   assert.equal((mobile.match(/data-go=/g)||[]).length,4);
 });
 
-test('Revision 15 consistently versions production assets and cache', () => {
+test('Revision 16 consistently versions production assets and cache', () => {
   const html=source('index.html');
-  assert.match(html,/name="sakhi-revision" content="15"/);
-  for(const match of html.matchAll(/(?:src|href)="\.\/[^"?]+\?v=(\d+)"/g))assert.equal(match[1],'15');
-  assert.match(source('sw.js'),/sakhi-magic-learning-v15/);
-  assert.doesNotMatch(source('sw.js'),/\?v=14/);
+  assert.match(html,/name="sakhi-revision" content="16"/);
+  for(const match of html.matchAll(/(?:src|href)="\.\/[^"?]+\?v=(\d+)"/g))assert.equal(match[1],'16');
+  assert.match(source('sw.js'),/sakhi-magic-learning-v16/);
+  assert.doesNotMatch(source('sw.js'),/\?v=15/);
+});
+
+test('Parent diagnostics and content review are isolated in their own panels', () => {
+  const html=source('index.html');
+  assert.match(html,/data-parent-content="review"/);
+  assert.match(html,/id="contentReview"/);
+  assert.match(html,/id="runAudioHealth"/);
+  assert.match(source('sakhi-shell.js'),/SpeechService\?\.healthCheck\(\{play:true\}\)/);
+});
+
+test('TTS edge function allows the real site origin and preserves typed provider errors', () => {
+  const edge=source('supabase/functions/sakhi-tts/index.ts');
+  assert.match(edge,/https:\/\/vgovindam\.github\.io/);
+  for(const code of ['ELEVENLABS_AUTH_FAILURE','ELEVENLABS_VOICE_NOT_FOUND','ELEVENLABS_QUOTA_FAILURE','ELEVENLABS_RATE_LIMIT','ELEVENLABS_REQUEST_FAILURE'])assert.match(edge,new RegExp(code));
+  assert.match(edge,/eleven_flash_v2_5/);assert.match(edge,/eleven_multilingual_v2/);
+  assert.doesNotMatch(edge,/sk_[A-Za-z0-9]/);
+});
+
+test('Generated instructional assets are registered and legacy atlases are not shipped', () => {
+  assert.ok(fs.statSync(path.join(root,'assets/phonics-ms-atlas-v1.webp')).size>30000);
+  assert.ok(fs.statSync(path.join(root,'assets/sakhi-storybook-atlas-v2.webp')).size>300000);
+  assert.match(source('visuals.js'),/validated_for_instruction:true/);
+  assert.doesNotMatch(source('sw.js'),/atlas-[123]\.b64/);
 });

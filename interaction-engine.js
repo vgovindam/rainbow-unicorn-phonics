@@ -2,7 +2,7 @@ const ALLOWED_INTERACTIONS=new Set(['tap_choice','multi_select','drag_drop','sor
 
 const structuredActivities=[
 {
- id:'read-first',domain:'reading',skill:'Beginning sounds',icon:'🦄',title:'Luna’s Sound Clouds',character:'Luna',character_icon:'🦄',objective:'Sort pictures by beginning phoneme.',reason:'Sorting forces the child to listen to the first sound and classify by phoneme.',interaction_type:'sort',instruction_text:'Sort the sound pictures!',spoken_instruction:'Put the pictures that start with mmm in Luna’s pink cloud and the pictures that start with sss in the blue cloud.',character_prompt:'Help me sort my clouds!',items:[{id:'moon',label:'Moon',emoji:'🌙'},{id:'map',label:'Map',emoji:'🗺️'},{id:'sun',label:'Sun',emoji:'☀️'},{id:'sock',label:'Sock',emoji:'🧦'}],targets:[{id:'m',label:'/m/ cloud',emoji:'☁️'},{id:'s',label:'/s/ cloud',emoji:'☁️'}],correct_answer:{moon:'m',map:'m',sun:'s',sock:'s'},distractors:[],hint_1:'Listen to the first sound.',hint_2:'Mmmmoon starts with /m/.',hint_3:'Moon and map go to /m/.',success_feedback:'Yes! Moon and map start with /m/.',retry_feedback:'Almost! Listen to the first sound again.',mastery_signal:'Correctly sorts beginning /m/ and /s/ pictures without guessing.',difficulty:1,estimated_minutes:4,reward:'✨ Shiny Sound Star',materials:'No materials.',parent:'Use pure /mmmm/ and /ssss/ sounds.',extension:'Find one /m/ object in the room.'
+ id:'read-first',domain:'reading',skill:'Beginning sounds',icon:'🦄',title:'Luna’s Sound Clouds',character:'Luna',character_icon:'🦄',objective:'Sort pictures by beginning phoneme.',reason:'Sorting forces the child to listen to the first sound and classify by phoneme.',interaction_type:'sort',instruction_text:'Sort the sound pictures!',spoken_instruction:'Put the pictures that start with mmm in Luna’s pink cloud and the pictures that start with sss in the blue cloud.',character_prompt:'Help me sort my clouds!',items:[{id:'moon',label:'Moon',asset_id:'phonics_moon_001',phoneme:'m',hide_label:true},{id:'map',label:'Map',asset_id:'phonics_map_001',phoneme:'m',hide_label:true},{id:'sun',label:'Sun',asset_id:'phonics_sun_001',phoneme:'s',hide_label:true},{id:'sock',label:'Sock',asset_id:'phonics_sock_001',phoneme:'s',hide_label:true}],targets:[{id:'m',label:'/m/ cloud',emoji:'☁️'},{id:'s',label:'/s/ cloud',emoji:'☁️'}],correct_answer:{moon:'m',map:'m',sun:'s',sock:'s'},distractors:[],hint_1:'Listen to the first sound.',hint_2:'Mmmmoon starts with /m/.',hint_3:'Moon and map go to /m/.',success_feedback:'Yes! Moon and map start with /m/.',retry_feedback:'Almost! Listen to the first sound again.',mastery_signal:'Correctly sorts beginning /m/ and /s/ pictures without guessing.',difficulty:1,estimated_minutes:4,reward:'✨ Shiny Sound Star',materials:'No materials.',parent:'Use pure /mmmm/ and /ssss/ sounds.',extension:'Find one /m/ object in the room.'
 },
 {
  id:'read-blend',domain:'reading',skill:'Oral blending',icon:'🌈',title:'Rainbow Blend Bridge',character:'Luna',character_icon:'🦄',objective:'Blend three spoken phonemes into a word.',reason:'Oral blending is the sound-combining process used during decoding.',interaction_type:'tap_choice',instruction_text:'Push the sounds together!',spoken_instruction:'Listen: mmm, aaa, t. Tap the word those sounds make.',character_prompt:'Build my rainbow bridge!',items:[{id:'mat',label:'mat'},{id:'sat',label:'sat'},{id:'map',label:'map'}],targets:[],correct_answer:'mat',distractors:['sat','map'],hint_1:'Hear the sounds again: mmm, aaa, t.',hint_2:'The word starts with mmm and ends with t.',hint_3:'Slide them together: mmm-aa-t, mat.',success_feedback:'You blended every sound: /m/ /a/ /t/ makes mat.',retry_feedback:'Almost! Touch each sound in your mind and blend again.',mastery_signal:'Blends /m/ /a/ /t/ with little or no prompting.',difficulty:2,estimated_minutes:3,reward:'✨ Shiny Blend Star',materials:'No materials.',parent:'If needed, shorten the pauses between sounds.',extension:'Blend /s/ /a/ /t/ without choices.'
@@ -75,8 +75,14 @@ const structuredActivities=[
 }
 ];
 
+function normalizeStructuredActivity(a){
+ const skillId=window.RainbowCurriculum?.aliases?.[a.skill]||`${a.domain}.${String(a.skill||'activity').toLowerCase().replace(/[^a-z0-9]+/g,'_')}`;
+ const curriculumSkill=window.RainbowCurriculum?.byId?.[skillId];
+ const visualAssets=(a.items||[]).map(x=>x.asset_id).filter(Boolean);
+ return {...a,activity_id:a.id,skill_id:skillId,prerequisite_ids:curriculumSkill?.prerequisites||[],learning_objective:a.objective,audio_assets:[{asset_id:`${a.id}_instruction`,kind:'spoken_instruction',source:'elevenlabs_cached'}],visual_assets:visualAssets,validation_status:'verified'};
+}
 function validateStructuredActivity(a){
- const required=['interaction_type','instruction_text','spoken_instruction','character_prompt','items','targets','correct_answer','distractors','hint_1','hint_2','hint_3','success_feedback','retry_feedback','mastery_signal','difficulty','estimated_minutes'];
+ const required=['activity_id','domain','skill_id','prerequisite_ids','interaction_type','learning_objective','instruction_text','spoken_instruction','character_prompt','items','targets','correct_answer','distractors','hint_1','hint_2','hint_3','success_feedback','retry_feedback','mastery_signal','difficulty','estimated_minutes','audio_assets','visual_assets'];
  if(!a||!ALLOWED_INTERACTIONS.has(a.interaction_type))return false;
  if(required.some(k=>a[k]===undefined||a[k]===null))return false;
  if(!Array.isArray(a.items)||!Array.isArray(a.targets)||!Array.isArray(a.distractors))return false;
@@ -87,13 +93,18 @@ function validateStructuredActivity(a){
  if(a.interaction_type==='multi_select'&&a.correct_answer.rule!=='one_per_group'&&(!Array.isArray(a.correct_answer)||a.correct_answer.some(x=>!ids.has(x))))return false;
  if(['sequence'].includes(a.interaction_type)&&(!Array.isArray(a.correct_answer)||a.correct_answer.some(x=>!ids.has(x))))return false;
  if(['sort','match','drag_drop'].includes(a.interaction_type)){const targetIds=new Set(a.targets.map(t=>t.id));if(Object.entries(a.correct_answer).some(([item,target])=>!ids.has(item)||!targetIds.has(target)))return false;}
+ if(a.domain==='reading'&&a.items.some(i=>i.phoneme)&&a.items.some(i=>a.correct_answer[i.id]!==i.phoneme))return false;
+ if(a.interaction_type==='number_manipulative'&&Number.isInteger(a.target_total)&&a.target_total-(a.initial_count||0)!==a.correct_answer)return false;
+ if(['tap_choice','story_choice'].includes(a.interaction_type)&&a.distractors.includes(a.correct_answer))return false;
  return true;
 }
 
-const rejectedActivities=structuredActivities.filter(a=>!validateStructuredActivity(a));
+const normalizedActivities=structuredActivities.map(normalizeStructuredActivity);
+const rejectedActivities=normalizedActivities.filter(a=>!validateStructuredActivity(a));
 if(rejectedActivities.length)console.error('Rejected invalid learning activities:',rejectedActivities.map(a=>a.id));
-const validActivities=structuredActivities.filter(validateStructuredActivity);
+const validActivities=normalizedActivities.filter(validateStructuredActivity);
 activities.splice(0,activities.length,...validActivities);
+window.SakhiActivityRegistry={activities:validActivities,rejected:rejectedActivities,validate:validateStructuredActivity};
 if(themes.dragon)delete themes.dragon;
 if(data.theme==='dragon')data.theme='unicorn';
 data.interactionEvidence=data.interactionEvidence||[];
@@ -130,7 +141,7 @@ function applyStrongScaffold(){const mount=document.getElementById('interactionM
 function recordInteractionEvent(type,extra={}){if(!interactionRuntime)return;const event={event_id:window.RainbowPersistence?.uuid(),date:todayKey(),timestamp:new Date().toISOString(),activityId:interactionRuntime.activity.id,interaction_type:interactionRuntime.activity.interaction_type,type,attempts:interactionRuntime.attempts,hintLevel:interactionRuntime.hintLevel,elapsed:Math.round((Date.now()-interactionRuntime.startedAt)/1000),...extra};data.interactionEvidence.push(event);data.interactionEvidence=data.interactionEvidence.slice(-180);persist(false);if(['success','not_yet'].includes(type))window.RainbowPersistence?.appendAttempt(event,interactionRuntime.activity).catch(()=>{});}
 function actionPulse(){if(!interactionRuntime)return false;const now=Date.now();if(interactionRuntime.lastActionAt&&now-interactionRuntime.lastActionAt<320)interactionRuntime.fastActions++;else interactionRuntime.fastActions=Math.max(0,interactionRuntime.fastActions-1);interactionRuntime.lastActionAt=now;if(interactionRuntime.fastActions>=3){document.getElementById('structuredFeedback').textContent='✨ Slow detective mode — look, think, then tap.';recordInteractionEvent('possible_random_tapping');return true}return false;}
 function renderInteraction(a){const m=document.getElementById('interactionMount');m.innerHTML='';switch(a.interaction_type){case'tap_choice':case'story_choice':renderTapChoice(a,m);break;case'multi_select':renderMultiSelect(a,m);break;case'sort':case'drag_drop':renderSort(a,m);break;case'match':renderMatch(a,m);break;case'memory':renderMemory(a,m);break;case'sequence':renderSequence(a,m);break;case'word_builder':renderWordBuilder(a,m);break;case'number_manipulative':renderNumberManipulator(a,m);break;case'pattern_builder':renderPatternBuilder(a,m);break;case'find_it':renderFindIt(a,m);break;case'trace':renderTrace(a,m);break;case'movement':case'offline_activity':renderOffline(a,m);break;default:m.textContent='Interaction unavailable.';}}
-function itemButton(i,extra=''){return `<button class="touch-item ${extra}" data-id="${esc(i.id)}">${i.emoji?`<span>${i.emoji}</span>`:''}<b>${esc(i.label||i.value||i.id)}</b></button>`;}
+function itemButton(i,extra=''){const visual=i.asset_id?window.AssetService?.instructionMarkup?.(i.asset_id):'';return `<button class="touch-item ${extra}" data-id="${esc(i.id)}" aria-label="${esc(i.label||i.value||i.id)}">${visual||(i.emoji?`<span>${i.emoji}</span>`:'')}${i.hide_label?'':`<b>${esc(i.label||i.value||i.id)}</b>`}</button>`;}
 function renderTapChoice(a,m){m.innerHTML=`<div class="touch-grid">${shuffle(a.items).map(i=>itemButton(i,'choice-touch')).join('')}</div>`;m.querySelectorAll('.choice-touch').forEach(b=>b.onclick=()=>submitTap(b.dataset.id,b));}
 function submitTap(id,btn){if(actionPulse())return;interactionRuntime.attempts++;const a=interactionRuntime.activity;if(id===a.correct_answer){btn.classList.add('correct');finishSuccess();}else{btn.classList.add('gentle-wrong');handleRetry();}}
 function renderMultiSelect(a,m){m.innerHTML=`<div class="touch-grid">${shuffle(a.items).map(i=>itemButton(i,'multi-touch')).join('')}</div><button class="big-action" onclick="checkMultiSelect()">⭐ Check My Picks</button>`;m.querySelectorAll('.multi-touch').forEach(b=>b.onclick=()=>{b.classList.toggle('selected');const s=runtimeState().selected;b.classList.contains('selected')?s.add(b.dataset.id):s.delete(b.dataset.id);});}
