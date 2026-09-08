@@ -120,4 +120,5 @@ test('Authoritative interaction engine owns every navigation renderer', () => {
   const engine=source('interaction-engine.js');
   for(const name of ['renderDomains','openDomain','renderQuest','ensureQuest','runActivity','runLearningActivity'])assert.match(engine,new RegExp(`function ${name}\\(`));
   assert.match(source('app.js'),/const art=document\.getElementById\('heroArt'\);if\(art\)/);
+  assert.match(engine,/querySelectorAll\(`\[data-placed=.*?forEach\(chip=>chip\.remove\(\)\)/s);
 });
