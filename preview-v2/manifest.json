@@ -1,0 +1,10 @@
+{
+  "name":"Sakhi Magic Learning",
+  "short_name":"Sakhi",
+  "description":"A playful, mastery-based early learning app with adaptive curriculum, magical adventures, and parent progress insights.",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#fffafd",
+  "theme_color":"#9257de",
+  "icons":[{"src":"./unicorn-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
