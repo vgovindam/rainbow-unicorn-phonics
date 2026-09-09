@@ -1,6 +1,6 @@
-const BUILD='2026.09.09-v2.1';
+const BUILD='2026.09.09-v2.2';
 const CACHE=`sakhi-v2-${BUILD}`;
-const CORE=['./','./index.html','./sakhi-v2.css?v=20260909v21','./sakhi-v2.js?v=20260909v21','./supabase-config.js?v=20260909v21','./manifest.json?v=20260909v21','./unicorn-icon.svg'];
+const CORE=['./','./index.html','./sakhi-v2.css?v=20260909v22','./presentation-theme.css?v=20260909v22','./sakhi-v2.js?v=20260909v22','./presentation-theme.js?v=20260909v22','./supabase-config.js?v=20260909v22','./manifest.json?v=20260909v22','./unicorn-icon.svg'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));
