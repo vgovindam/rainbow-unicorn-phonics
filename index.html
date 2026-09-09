@@ -3,138 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#8b5cf6">
+<meta name="theme-color" content="#8c53d6">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Sakhi Magic Learning">
-<meta name="sakhi-build" content="2026.09.09-v2.2">
-<meta name="description" content="Sakhi Magic Learning — a magical, adaptive princess-and-unicorn learning adventure for early readers, thinkers and explorers.">
+<meta name="sakhi-build" content="2026.09.09-v3.0">
+<meta name="description" content="Sakhi — Princess & Unicorn Learning Adventure">
 <title>Sakhi Magic Learning</title>
-<link rel="manifest" href="./manifest.json?v=20260909v22">
+<link rel="manifest" href="./manifest.json?v=20260909v30">
 <link rel="apple-touch-icon" href="./unicorn-icon.svg">
-<link rel="stylesheet" href="./sakhi-v2.css?v=20260909v22">
-<link rel="stylesheet" href="./presentation-theme.css?v=20260909v22">
+<link rel="stylesheet" href="./sakhi-v3.css?v=20260909v30">
 </head>
 <body>
-<div id="updateBanner" class="update-banner hidden" role="status">
-  <div><b>✨ A new Sakhi version is ready</b><span>Refresh to get the latest learning updates.</span></div>
-  <div class="update-actions"><button id="updateLater" class="ghost-btn">Later</button><button id="updateNow" class="primary-btn">Refresh now</button></div>
-</div>
-
-<div id="parentGate" class="modal hidden" aria-hidden="true">
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="parentGateTitle">
-    <button class="modal-close" id="closeParentGate" aria-label="Close">×</button>
-    <div class="lock-orb">🔒</div>
-    <h2 id="parentGateTitle">Parents only</h2>
-    <p>Enter your 6-digit parent passcode.</p>
-    <input id="parentPasscode" inputmode="numeric" maxlength="6" autocomplete="off" type="password" placeholder="••••••">
-    <button id="unlockParent" class="primary-btn wide">Unlock Parent Dashboard</button>
-    <div id="parentGateMessage" class="form-message" aria-live="polite"></div>
-  </div>
-</div>
-
-<header class="top-shell">
-  <a class="brand" href="#" data-view="home" aria-label="Sakhi home"><span class="brand-mark">🦄</span><span><b>Sakhi</b><small>Magic Learning</small></span></a>
-  <nav class="desktop-nav" aria-label="Main navigation">
-    <button data-view="home" class="active">Home</button>
-    <button data-view="adventure">Adventure</button>
-    <button data-view="kingdoms">Kingdoms</button>
-    <button data-view="rewards">Rewards</button>
-    <button id="parentNav" class="parent-link">🔒 Parents</button>
-  </nav>
-</header>
-
-<main class="app-shell">
-  <section id="view-home" class="view active">
-    <section class="hero-card">
-      <div class="hero-copy">
-        <span class="eyebrow">🌈 Princess + Unicorn learning magic</span>
-        <h1>Hi! I’m <span>Sakhi</span>.</h1>
-        <p>I’ll listen, teach, challenge, and celebrate every little step.</p>
-        <button id="startAdventure" class="magic-start">🌈 Start Today’s Adventure</button>
-        <div class="hero-meta"><span id="homeGoalPill">Today: smart mixed practice</span><span id="homeDurationPill">About 20 min</span></div>
-      </div>
-      <div id="heroScene" class="hero-scene" aria-hidden="true"></div>
-    </section>
-
-    <section class="magic-guide-wrap" aria-label="Sakhi magical guides">
-      <div class="magic-guide-title"><span>✨</span> Meet a few of your magical guides</div>
-      <div id="magicGuideStrip" class="magic-guide-strip"></div>
-    </section>
-
-    <section class="child-stats" aria-label="Progress summary">
-      <div><span>⭐</span><b id="homeStars">0</b><small>Magic Stars</small></div>
-      <div><span>💎</span><b id="homeGems">0</b><small>Unicorn Gems</small></div>
-      <div><span>🌱</span><b id="homeCurrentSkills">0</b><small>Growing Skills</small></div>
-    </section>
-
-    <div class="section-heading"><div><span class="kicker">EXPLORE</span><h2>Choose a learning world</h2></div><p>Sakhi still picks the right skill level.</p></div>
-    <div class="kingdom-grid" id="homeKingdoms"></div>
-  </section>
-
-  <section id="view-adventure" class="view">
-    <div class="section-heading adventure-heading"><div><span class="kicker">TODAY’S PLAN</span><h2 id="adventureTitle">Sakhi’s Magical Trail</h2><p id="adventureSummary">A balanced mix of reading, math, thinking, and discovery.</p></div><button id="newPlan" class="ghost-btn">↻ New mix</button></div>
-    <div id="questStrip" class="quest-strip"></div>
-    <section id="activityWorkspace" class="activity-workspace" tabindex="-1" aria-live="polite">
-      <div class="workspace-empty">
-        <div class="empty-sparkle">✨</div>
-        <h3>Pick a mission above</h3>
-        <p>The activity will open right here.</p>
-      </div>
-    </section>
-  </section>
-
-  <section id="view-kingdoms" class="view">
-    <div class="section-heading"><div><span class="kicker">LEARNING KINGDOMS</span><h2>Practice by skill</h2><p>Use this when you want extra practice outside today’s adventure.</p></div></div>
-    <div id="kingdomGrid" class="kingdom-grid"></div>
-    <div id="kingdomDetail"></div>
-  </section>
-
-  <section id="view-rewards" class="view">
-    <div class="section-heading"><div><span class="kicker">MAGIC REWARDS</span><h2>Celebrate effort and growth</h2><p>Rewards never replace real mastery.</p></div></div>
-    <div class="reward-hero">
-      <div><span>⭐</span><b id="rewardStars">0</b><small>Magic Stars</small></div>
-      <div><span>💎</span><b id="rewardGems">0</b><small>Unicorn Gems</small></div>
-      <div><span>💛</span><b id="rewardCourage">0</b><small>Courage Hearts</small></div>
-    </div>
-    <div id="badgeGrid" class="badge-grid"></div>
-  </section>
-
-  <section id="view-parent" class="view parent-view">
-    <header class="parent-hero">
-      <div><span class="adult-badge">ADULT AREA</span><h1>Parent Dashboard</h1><p>Understand the learning plan in seconds, then let Sakhi do the teaching.</p></div>
-      <button id="lockParent" class="ghost-btn">🔒 Lock</button>
-    </header>
-    <nav class="parent-tabs" id="parentTabs" aria-label="Parent dashboard sections">
-      <button data-parent-tab="overview" class="active">Overview</button>
-      <button data-parent-tab="progress">Progress</button>
-      <button data-parent-tab="path">Learning Path</button>
-      <button data-parent-tab="reports">Reports</button>
-      <button data-parent-tab="curriculum">Curriculum</button>
-      <button data-parent-tab="settings">Settings</button>
-    </nav>
-
-    <section class="parent-panel active" data-parent-panel="overview"><div id="parentOverview"></div></section>
-    <section class="parent-panel" data-parent-panel="progress" hidden><div id="parentProgress"></div></section>
-    <section class="parent-panel" data-parent-panel="path" hidden><div id="parentPath"></div></section>
-    <section class="parent-panel" data-parent-panel="reports" hidden><div id="parentReports"></div></section>
-    <section class="parent-panel" data-parent-panel="curriculum" hidden><div id="parentCurriculum"></div></section>
-    <section class="parent-panel" data-parent-panel="settings" hidden><div id="parentSettings"></div></section>
-  </section>
+<div id="updateBanner" class="update-banner" role="status"><div><b>✨ A new Sakhi version is ready</b><small>Refresh to get the latest learning updates.</small></div><div class="update-actions"><button id="updateLater">Later</button><button id="updateNow">Refresh now</button></div></div>
+<header class="topbar"><a href="#" class="brand" data-nav="home"><span class="brand-mark">🦄</span><span class="brand-copy"><b>Sakhi</b><small>PRINCESS & UNICORN LEARNING</small></span></a><nav class="nav" aria-label="Main navigation"><button data-nav="home" class="active">🏠 Home</button><button data-nav="adventure">✨ Adventure</button><button data-nav="rewards">⭐ Rewards</button><button data-nav="parents">🔒 Parents</button></nav><div class="header-stats"><span class="pill">⭐ <span id="starsCount">0</span></span><span class="pill">💎 <span id="gemsCount">0</span></span><span class="pill" id="syncBadge">💻 This device</span></div></header>
+<main class="app">
+<section class="view active" data-view="home"><section class="hero"><div class="hero-copy"><span class="eyebrow">🌈 Princess + Unicorn learning magic</span><h1>A brighter, kinder, <span class="magic-word">smarter</span> you awaits.</h1><p>Sakhi remembers what you know, finds the right next challenge, and takes you through one magical learning adventure at a time.</p><button id="startToday" class="magic-btn">▶ Start Today’s Adventure</button><div class="hero-meta"><span>About 20 minutes</span><span>Reading → Math → Discovery → Rewards</span></div></div><div class="hero-art" id="homeHeroArt"></div></section><section class="home-insight"><div class="insight-card"><small>Today’s goal</small><b id="homeGoal"></b></div><div class="insight-card"><small>Why today?</small><p id="homeWhy"></p></div><div class="insight-card"><small>What comes next</small><b id="homeNext"></b></div></section><div class="section-head"><div><h2>Explore the magical kingdoms</h2><p>Each world has its own look, guide, and learning focus.</p></div></div><div class="kingdom-grid" id="homeKingdoms"></div></section>
+<section class="view" data-view="adventure"><div class="adventure-shell"><div class="adventure-top"><div><small>TODAY’S PLAN</small><h1>Sakhi’s Magical Trail</h1><p id="adventureIntro"></p></div><div><button id="newPlan" class="soft-btn">↻ Fresh mix</button> <button id="startTrail" class="magic-btn">Start trail</button></div></div><div class="trail" id="trail"></div></div></section>
+<section class="view activity-view" data-view="activity"><header class="activity-header"><button id="activityHome" class="outline-btn">← Home</button><div class="crumb"><small id="activityWorld"></small><b id="activityType"></b></div><span class="pill" id="activityProgress">1 of 4</span></header><div class="activity-page"><section class="activity-hero"><div><span class="label">MAGICAL LEARNING MISSION</span><h1 id="activityTitle"></h1><p id="activityInstruction"></p><div class="activity-tools"><button class="soft-btn" id="hearAgain">🔊 Hear again</button><button class="soft-btn" id="phonemeBtn">👂 Hear sound</button><button class="soft-btn" id="hintBtn">💡 Hint</button></div></div><img id="activityGuide" class="activity-guide" src="" alt=""></section><section class="interaction-panel" id="interactionArea"></section><button hidden id="activityBack"></button></div></section>
+<section class="view" data-view="rewards"><section class="rewards-shell"><img class="reward-art" src="./assets/magic/reading-unicorn.svg" alt="Happy Sakhi unicorn"><div id="rewardSummary"><h2>Your Magic Collection</h2><p>Every star represents real learning and effort.</p></div><div class="reward-counters"><div class="reward-counter"><span>⭐</span><b id="rewardStars">0</b><small>Magic Stars</small></div><div class="reward-counter"><span>💎</span><b id="rewardGems">0</b><small>Unicorn Gems</small></div><div class="reward-counter"><span>💛</span><b id="rewardHearts">0</b><small>Courage Hearts</small></div></div><div class="reward-actions"><button class="magic-btn" id="bedtimeBtn">🌙 Bedtime Story</button><button class="soft-btn" id="rewardHome">🏠 Home</button></div></section></section>
+<section class="view" data-view="parents"><section class="parent-shell"><header class="parent-head"><div><small>ADULT AREA</small><h1>Parent Dashboard</h1><p>Understand the learning journey in seconds, then let Sakhi do the teaching.</p></div><div><span class="pill" id="parentSync"></span></div></header><div class="parent-grid"><div class="parent-goal"><small>Today’s goal</small><b id="todayGoal"></b></div><div class="parent-goal"><small>Why today?</small><b id="whyToday"></b></div><div class="parent-goal"><small>What’s next?</small><b id="whatNext"></b></div></div><section class="parent-section"><h2>Current learning path</h2><div id="domainProgress"></div></section><section class="parent-section"><h2>Recent learning history</h2><ul class="history-list" id="historyList"></ul></section><section class="parent-section"><h2>Settings</h2><div class="settings-box" id="parentSettings"></div></section></section></section>
+<section class="view" data-view="story"><section class="story-shell"><h1 id="storyTitle">🌙 Tonight’s Sakhi Story</h1><div class="story-text" id="storyText"></div><div class="story-actions"><button class="magic-btn" id="readStory">🔊 Read to me</button><button class="soft-btn" id="stopStory">Stop</button><button class="soft-btn" id="storyHome">Home</button></div></section></section>
 </main>
-
-<nav class="bottom-nav" aria-label="Mobile navigation">
-  <button data-view="home" class="active"><span>🏠</span>Home</button>
-  <button data-view="adventure"><span>✨</span>Adventure</button>
-  <button data-view="kingdoms"><span>🗺️</span>Kingdoms</button>
-  <button data-view="rewards"><span>⭐</span>Rewards</button>
-</nav>
-
-<div id="toast" class="toast" role="status"></div>
-<audio id="sakhiAudio" preload="auto" playsinline></audio>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-config.js?v=20260909v22"></script>
-<script src="./sakhi-v2.js?v=20260909v22"></script>
-<script src="./presentation-theme.js?v=20260909v22"></script>
-</body>
-</html>
+<nav class="bottom-nav" aria-label="Mobile navigation"><button data-nav="home" class="active"><span>🏠</span>Home</button><button data-nav="adventure"><span>✨</span>Adventure</button><button data-nav="rewards"><span>⭐</span>Rewards</button><button data-nav="parents"><span>🔒</span>Parents</button></nav>
+<div class="completion" id="completionOverlay"><div class="completion-card"><div class="big">🌈⭐</div><h2 id="completionTitle">Beautiful work!</h2><p id="completionText"></p><button class="magic-btn" id="nextActivity">Next adventure →</button><button class="soft-btn" id="completionClose">Stay here</button></div></div><div class="toast" id="toast" role="status"></div><audio id="sakhiAudio" preload="auto" playsinline></audio>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="./supabase-config.js?v=20260909v30"></script><script src="./sakhi-v3.js?v=20260909v30"></script>
+</body></html>
