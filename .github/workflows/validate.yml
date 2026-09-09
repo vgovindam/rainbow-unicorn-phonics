@@ -16,18 +16,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check JavaScript syntax
+      - name: Check live runtime syntax
         run: |
-          node --check system-events.js
-          node --check app.js
-          node --check interaction-engine.js
-          node --check persistence.js
-          node --check backend-bridge.js
-          node --check speech-service.js
-          node --check sakhi-shell.js
-          node --check adaptive-engine.js
-          node --check curriculum.js
-      - name: Check required interaction schema fields
-        run: node scripts/validate-activities.cjs
-      - name: Run remediation regression tests
-        run: node --test tests/remediation.test.cjs
+          node --check sakhi-v2.js
+          node --check presentation-theme.js
+      - name: Run live V2 regression suite
+        run: node --test tests/v2.test.cjs
