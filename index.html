@@ -1,171 +1,144 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="theme-color" content="#9257de" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="Sakhi Magic Learning" />
-<meta name="sakhi-revision" content="16" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#8d66e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sakhi Magic Learning">
+<meta name="sakhi-build" content="2026.09.08-v2">
 <title>Sakhi Magic Learning</title>
-<link rel="manifest" href="./manifest.json?v=16" />
-<link rel="stylesheet" href="./styles.css?v=16" />
-<link rel="stylesheet" href="./interactions.css?v=16" />
-<link rel="stylesheet" href="./visuals.css?v=16" />
-<link rel="stylesheet" href="./sakhi-shell.css?v=16" />
+<link rel="manifest" href="./manifest.json?v=20260908v2">
+<link rel="apple-touch-icon" href="./assets/sakhi-icon-180.png?v=20260908v2">
+<link rel="stylesheet" href="./sakhi-v2.css?v=20260908v2">
 </head>
-<body data-theme="unicorn">
-<main class="shell">
-<nav class="nav" aria-label="Main navigation">
-  <button data-go="home" class="active">🏠 Home</button>
-  <button data-go="quest">✨ Adventure</button>
-  <button data-go="learn">🗺️ Kingdoms</button>
-  <button data-go="rewards">🌟 Rewards</button>
-  <button data-go="parent" class="parent-nav">🔒 Parents</button>
-</nav>
+<body>
+<div id="updateBanner" class="update-banner hidden" role="status">
+  <div><b>✨ A new Sakhi version is ready</b><span>Refresh to get the latest learning updates.</span></div>
+  <div class="update-actions"><button id="updateLater" class="ghost-btn">Later</button><button id="updateNow" class="primary-btn">Refresh now</button></div>
+</div>
 
-<section id="home" class="view active">
-  <section class="hero glass">
-    <div class="hero-content">
-      <div class="hero-top"><span class="eyebrow">✨ Meet Sakhi, your magical learning friend</span></div>
-      <h1><span class="rainbow">Sakhi</span><br/>Magic Learning</h1>
-      <p>Listen, touch, move, build, and discover.</p>
-      <button class="sakhi-start" type="button" onclick="go('quest')">🌈 Start My Adventure</button>
-    </div>
-    <div class="hero-visual"><div class="hero-art" id="heroArt" aria-hidden="true">🦄</div></div>
-  </section>
-  <div class="child-progress" aria-label="Adventure progress">
-    <div><span>✨</span><b id="questStat">0/5</b><small>Quest</small></div>
-    <div><span>🏆</span><b id="masteredStat">0</b><small>Skills</small></div>
-    <div><span>🌟</span><b id="rewardStat">0</b><small>Rewards</small></div>
-    <span id="baseStat" hidden>0/33</span>
+<div id="parentGate" class="modal hidden" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="parentGateTitle">
+    <button class="modal-close" id="closeParentGate" aria-label="Close">×</button>
+    <div class="lock-orb">🔒</div>
+    <h2 id="parentGateTitle">Parents only</h2>
+    <p>Enter your 6-digit parent passcode.</p>
+    <input id="parentPasscode" inputmode="numeric" maxlength="6" autocomplete="off" type="password" placeholder="••••••">
+    <button id="unlockParent" class="primary-btn wide">Unlock Parent Dashboard</button>
+    <div id="parentGateMessage" class="form-message" aria-live="polite"></div>
   </div>
-  <div class="home-heading"><div><span class="sakhi-kicker">CHOOSE A WORLD</span><h2>Where should we explore?</h2></div><div class="home-controls"><label class="theme-picker"><span>Adventure</span><select id="themeSelect" aria-label="Adventure theme" onchange="setTheme(this.value)">
-    <option value="unicorn">🦄 Rainbow Unicorn Kingdom</option><option value="ice">❄️ Ice Princess Castle</option><option value="mermaid">🧜‍♀️ Mermaid Ocean Adventure</option><option value="library">🌳 Forest Friends</option><option value="tower">🏰 Princess Garden Castle</option><option value="fairy">🧚 Moon Fairy Garden</option><option value="space">🍭 Cotton Candy Castle</option>
-  </select></label><button class="parent-home-link" data-go="parent" type="button">🔒 Parents</button></div></div>
-  <div class="sakhi-kingdoms">
-    <button data-domain="reading"><span>📚</span><b>Story Kingdom</b><small>Sounds and stories</small></button>
-    <button data-domain="math"><span>🔢</span><b>Number Kingdom</b><small>Count and reason</small></button>
-    <button data-domain="logic"><span>🧩</span><b>Puzzle Palace</b><small>Think and solve</small></button>
-    <button data-domain="science"><span>🔬</span><b>Discovery World</b><small>Wonder and test</small></button>
-    <button data-domain="creativity"><span>🎨</span><b>Create & Play</b><small>Imagine and make</small></button>
-  </div>
-</section>
+</div>
 
-<section id="quest" class="view">
-  <div class="section-title"><h2>✨ Today's Magical Quest</h2><p id="questDate"></p></div>
-  <div class="card quest-intro"><div><span class="badge kid">Child-facing missions</span><h3 id="questTitle">Sakhi's Learning Trail</h3><p id="questSummary">Five short missions. Tap 🔊 Hear It whenever you want the instruction again.</p></div><button class="btn soft" onclick="refreshQuest()">↻ New Mix</button></div>
-  <div id="questCards" class="quest-list"></div>
-  <div id="activityRunner" class="card runner"></div>
-</section>
-
-<section id="learn" class="view">
-  <div class="section-title"><h2>🗺️ Learning Kingdom</h2><p>Tap a domain to see skills and purposeful activities.</p></div>
-  <div id="domainGrid" class="domain-grid"></div>
-  <div id="domainDetail" class="domain-detail"></div>
-</section>
-
-<section id="baseline" class="view">
-  <div class="section-title"><h2>✨ Sakhi's Magic Challenge</h2><p><span class="badge adult">Adult-guided</span> 5–10 minutes</p></div>
-  <div class="card"><h3>Parent script</h3><div class="say">“Sakhi lost some rainbow crystals. She needs a Sound Detective! Every sound challenge helps bring one back. Want to help?”</div><p class="muted">Give about 3 seconds per answer. Do not teach during this check. If she does not know one, say: “That's okay. Let's try another one.”</p></div>
-  <div id="assessment"></div>
-  <div class="card baseline-actions"><button class="btn primary" onclick="go('lesson')">Open Phonics Day 1 🦄</button><button class="btn soft" onclick="resetBaseline()">Reset baseline</button></div>
-  <div class="score-panel"><div class="score-top"><div><div class="score-big"><span id="scoreNow">0</span> / 33</div><div class="recommend" id="recommendation">Complete the sections to find the best reading starting point.</div></div></div><div class="bar"><i id="scoreBar"></i></div></div>
-</section>
-
-<section id="lesson" class="view">
-  <div class="section-title"><h2>📚 Phonics Day 1 — Missing Rainbow Sounds</h2><p><span class="badge adult">Adult-guided</span> 15–20 minutes</p></div>
-  <div class="card"><div class="kicker">Today's skill</div><h3>/m/, /s/, /t/, /p/, short /a/ + first sounds + early blending</h3><div class="sound-row"><span class="sound">m</span><span class="sound">s</span><span class="sound">t</span><span class="sound">p</span><span class="sound">a</span></div><div class="tip spaced-top"><b>Pure sound reminder:</b> /mmmm/ not “muh”; /ssss/ not “suh”; keep /t/ and /p/ quick.</div></div>
-  <div id="lessonSteps"></div>
-  <div class="card"><div class="kicker">Parent observation</div><h3>Record what you actually saw</h3><div class="tracker-row"><b>m, s, t, p, a</b><select class="status-select observe" data-key="sounds"><option>Not rated</option><option>Mastered today</option><option>Developing</option><option>Needs more practice</option></select></div><div class="tracker-row"><b>Beginning sounds</b><select class="status-select observe" data-key="begin"><option>Not rated</option><option>Mastered today</option><option>Developing</option><option>Needs more practice</option></select></div><div class="tracker-row"><b>Oral blending</b><select class="status-select observe" data-key="blend"><option>Not rated</option><option>Mastered today</option><option>Developing</option><option>Needs more practice</option></select></div><label><b>Notes</b><textarea id="notes" class="notes" placeholder="Example: m/s easy, t confused, loved jumping, needed help with mat..."></textarea></label></div>
-  <div class="row"><button class="btn soft" onclick="go('baseline')">← Baseline</button><button class="btn mint" onclick="go('parent')">Parent Dashboard →</button></div>
-</section>
-
-<section id="parent" class="view">
-  <header class="parent-header">
-    <div><span class="badge adult">ADULT AREA</span><h1>Parent Dashboard</h1><p>Progress, learning decisions, settings, and family tools—kept away from the child experience.</p></div>
-    <button class="btn soft" onclick="lockSakhiParent()">🔒 Lock Parent Mode</button>
-  </header>
-  <nav class="parent-tabs" aria-label="Parent dashboard sections">
-    <button class="active" data-parent-panel="overview">Overview</button>
-    <button data-parent-panel="progress">Progress</button>
-    <button data-parent-panel="path">Learning Path</button>
-    <button data-parent-panel="reports">Reports</button>
-    <button data-parent-panel="curriculum">Curriculum</button>
-    <button data-parent-panel="review">Content Review</button>
-    <button data-parent-panel="settings">Settings</button>
+<header class="top-shell">
+  <a class="brand" href="#" data-view="home" aria-label="Sakhi home"><span class="brand-mark">✨</span><span><b>Sakhi</b><small>Magic Learning</small></span></a>
+  <nav class="desktop-nav" aria-label="Main navigation">
+    <button data-view="home" class="active">Home</button>
+    <button data-view="adventure">Adventure</button>
+    <button data-view="kingdoms">Kingdoms</button>
+    <button data-view="rewards">Rewards</button>
+    <button id="parentNav" class="parent-link">🔒 Parents</button>
   </nav>
-  <section class="parent-panel active" data-parent-content="overview">
-    <div id="placementSlot"></div>
-    <div id="masterySummary" class="mastery-summary" aria-live="polite"></div>
-    <div class="grid">
-      <div class="card"><h3>Recommended next focus</h3><div id="nextFocus" class="say"></div><p class="muted">Mastery requires repeated success across days and activity formats.</p></div>
-      <div class="card"><h3>Session guardrails</h3><p><b>Typical session:</b> 15–25 min<br><b>Activity:</b> 2–7 min<br><b>Practice target:</b> about 80–90% success<br><b>When struggling:</b> add one scaffold<br><b>When consistently strong:</b> increase difficulty slightly</p></div>
-    </div>
-  </section>
-  <section class="parent-panel" data-parent-content="progress" hidden>
-    <div class="section-title"><h2>Adaptive skill states</h2><p>Evidence by domain and skill.</p></div>
-    <div class="state-legend"><span>Not Introduced</span><span>Introduced</span><span>Learning</span><span>Developing</span><span>Mostly Mastered</span><span>Mastered</span><span>Review Needed</span></div>
-    <div class="card"><div id="skillTracker"></div></div>
-    <div class="section-title"><h2>Reading placement</h2><p>Individual skill scores matter more than the total.</p></div>
-    <div id="breakdown" class="mini-grid"></div>
-    <div id="insightsSlot"></div>
-  </section>
-  <section class="parent-panel" data-parent-content="path" hidden><div id="learningPathSlot"></div></section>
-  <section class="parent-panel" data-parent-content="reports" hidden><div id="parentReportsSlot"></div></section>
-  <section class="parent-panel" data-parent-content="curriculum" hidden>
-    <div class="section-title"><h2>Curriculum & placement</h2><p>Adult-guided checks and teaching tools.</p></div>
-    <div class="grid thirds">
-      <div class="card"><h3>Reading baseline</h3><p>A short placement check for sounds, blending, segmenting, and early decoding.</p><button class="btn primary" onclick="go('baseline')">Open baseline</button></div>
-      <div class="card"><h3>Phonics lesson</h3><p>Open the guided first lesson with parent scripts and observation notes.</p><button class="btn mint" onclick="go('lesson')">Open lesson</button></div>
-      <div class="card"><h3>Coaching language</h3><div class="say">“Almost. Let's try that part again.”</div><div class="say">“Show me how you figured it out.”</div></div>
-    </div>
-  </section>
-  <section class="parent-panel" data-parent-content="review" hidden>
-    <div class="section-title"><h2>Content review</h2><p>Verified answers, distractors, audio, visuals, and curriculum links.</p></div>
-    <div id="contentReview"></div>
-  </section>
-  <section class="parent-panel" data-parent-content="settings" hidden>
-    <div class="section-title"><h2>Family & app settings</h2><p>Sync, backup, and device controls.</p></div>
-    <div class="card audio-health-card">
-      <div class="audio-health-head"><div><span class="badge adult">Audio diagnostics</span><h3>Sakhi voice health</h3><p>Runs a real ElevenLabs request and plays the returned audio.</p></div><button class="btn primary" id="runAudioHealth" type="button">Run voice check</button></div>
-      <div id="audioHealthStatus" class="audio-health-status" aria-live="polite">Not checked on this device.</div>
-      <dl id="audioHealthMetrics" class="audio-health-metrics"></dl>
-      <p class="muted">Phoneme clips remain disabled until each pure sound has been manually validated; activity instructions and words use natural narration.</p>
-    </div>
-    <div id="familySyncSlot"></div>
-    <div id="dataSafetySlot"></div>
-  </section>
-</section>
+</header>
 
-<section id="rewards" class="view">
-  <div class="section-title"><h2>✨ Shiny Star Reward Map</h2><p>Reward effort, thinking, persistence, improvement, and independence.</p></div>
-  <div class="card"><div id="rewardGrid" class="reward-grid"></div></div>
-  <div class="grid spaced-top"><div class="card"><h3>Praise learning behaviors</h3><div class="say">“You kept trying when the puzzle was tricky.”</div><div class="say">“You checked your work before you answered.”</div><div class="say">“You explained how you figured it out.”</div></div><div class="card"><h3>Do not reward only correctness</h3><p>Magic rewards can recognize careful listening, useful strategies, asking for help, flexible thinking, persistence, and doing something more independently than before.</p></div></div>
-</section>
+<main class="app-shell">
+  <section id="view-home" class="view active">
+    <section class="hero-card">
+      <div class="hero-copy">
+        <span class="eyebrow">✨ Learning that grows with her</span>
+        <h1>Hi! I’m <span>Sakhi</span>.</h1>
+        <p>I’ll listen, teach, challenge, and celebrate every little step.</p>
+        <button id="startAdventure" class="magic-start">🌈 Start Today’s Adventure</button>
+        <div class="hero-meta"><span id="homeGoalPill">Today: smart mixed practice</span><span id="homeDurationPill">About 20 min</span></div>
+      </div>
+      <div id="heroScene" class="hero-scene" aria-hidden="true"></div>
+    </section>
 
-<div class="footer">✨ Sakhi Magic Learning · No ads · Family progress can sync securely across devices</div>
+    <section class="child-stats" aria-label="Progress summary">
+      <div><span>⭐</span><b id="homeStars">0</b><small>Magic Stars</small></div>
+      <div><span>💎</span><b id="homeGems">0</b><small>Unicorn Gems</small></div>
+      <div><span>🌱</span><b id="homeCurrentSkills">0</b><small>Growing Skills</small></div>
+    </section>
+
+    <div class="section-heading"><div><span class="kicker">EXPLORE</span><h2>Choose a learning world</h2></div><p>Sakhi still picks the right skill level.</p></div>
+    <div class="kingdom-grid" id="homeKingdoms"></div>
+  </section>
+
+  <section id="view-adventure" class="view">
+    <div class="section-heading adventure-heading"><div><span class="kicker">TODAY’S PLAN</span><h2 id="adventureTitle">Sakhi’s Magical Trail</h2><p id="adventureSummary">A balanced mix of reading, math, thinking, and discovery.</p></div><button id="newPlan" class="ghost-btn">↻ New mix</button></div>
+    <div id="questStrip" class="quest-strip"></div>
+    <section id="activityWorkspace" class="activity-workspace" tabindex="-1" aria-live="polite">
+      <div class="workspace-empty">
+        <div class="empty-sparkle">✨</div>
+        <h3>Pick a mission above</h3>
+        <p>The activity will open right here.</p>
+      </div>
+    </section>
+  </section>
+
+  <section id="view-kingdoms" class="view">
+    <div class="section-heading"><div><span class="kicker">LEARNING KINGDOMS</span><h2>Practice by skill</h2><p>Use this when you want extra practice outside today’s adventure.</p></div></div>
+    <div id="kingdomGrid" class="kingdom-grid"></div>
+    <div id="kingdomDetail"></div>
+  </section>
+
+  <section id="view-rewards" class="view">
+    <div class="section-heading"><div><span class="kicker">MAGIC REWARDS</span><h2>Celebrate effort and growth</h2><p>Rewards never replace real mastery.</p></div></div>
+    <div class="reward-hero">
+      <div><span>⭐</span><b id="rewardStars">0</b><small>Magic Stars</small></div>
+      <div><span>💎</span><b id="rewardGems">0</b><small>Unicorn Gems</small></div>
+      <div><span>💛</span><b id="rewardCourage">0</b><small>Courage Hearts</small></div>
+    </div>
+    <div id="badgeGrid" class="badge-grid"></div>
+  </section>
+
+  <section id="view-parent" class="view parent-view">
+    <header class="parent-hero">
+      <div><span class="adult-badge">ADULT AREA</span><h1>Parent Dashboard</h1><p>Understand the learning plan in seconds, then let Sakhi do the teaching.</p></div>
+      <button id="lockParent" class="ghost-btn">🔒 Lock</button>
+    </header>
+    <nav class="parent-tabs" id="parentTabs" aria-label="Parent sections">
+      <button data-parent-tab="overview" class="active">Overview</button>
+      <button data-parent-tab="progress">Progress</button>
+      <button data-parent-tab="path">Learning Path</button>
+      <button data-parent-tab="reports">Reports</button>
+      <button data-parent-tab="curriculum">Curriculum</button>
+      <button data-parent-tab="settings">Settings</button>
+    </nav>
+
+    <section class="parent-panel active" data-parent-panel="overview">
+      <div id="parentOverview"></div>
+    </section>
+    <section class="parent-panel" data-parent-panel="progress" hidden>
+      <div id="parentProgress"></div>
+    </section>
+    <section class="parent-panel" data-parent-panel="path" hidden>
+      <div id="parentPath"></div>
+    </section>
+    <section class="parent-panel" data-parent-panel="reports" hidden>
+      <div id="parentReports"></div>
+    </section>
+    <section class="parent-panel" data-parent-panel="curriculum" hidden>
+      <div id="parentCurriculum"></div>
+    </section>
+    <section class="parent-panel" data-parent-panel="settings" hidden>
+      <div id="parentSettings"></div>
+    </section>
+  </section>
 </main>
 
-<nav class="bottom" aria-label="Mobile navigation">
-  <button data-go="home" class="active"><span>🏠</span>Home</button>
-  <button data-go="quest"><span>✨</span>Adventure</button>
-  <button data-go="learn"><span>🗺️</span>Kingdoms</button>
-  <button data-go="rewards"><span>🌟</span>Rewards</button>
+<nav class="bottom-nav" aria-label="Mobile navigation">
+  <button data-view="home" class="active"><span>🏠</span>Home</button>
+  <button data-view="adventure"><span>✨</span>Adventure</button>
+  <button data-view="kingdoms"><span>🗺️</span>Kingdoms</button>
+  <button data-view="rewards"><span>⭐</span>Rewards</button>
 </nav>
-<div class="toast" id="toast">Saved ✨</div>
+
+<div id="toast" class="toast" role="status"></div>
+<audio id="sakhiAudio" preload="auto" playsinline></audio>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-config.js?v=16"></script>
-<script src="./system-events.js?v=16"></script>
-<script src="./curriculum.js?v=16"></script>
-<script src="./persistence.js?v=16"></script>
-<script src="./speech-service.js?v=16"></script>
-<script src="./app.js?v=16"></script>
-<script src="./interaction-engine.js?v=16"></script>
-<script src="./visuals.js?v=16"></script>
-<script src="./adaptive-engine.js?v=16"></script>
-<script src="./backend-bridge.js?v=16"></script>
-<script src="./sakhi-shell.js?v=16"></script>
+<script src="./supabase-config.js?v=20260908v2"></script>
+<script src="./sakhi-v2.js?v=20260908v2"></script>
 </body>
 </html>
