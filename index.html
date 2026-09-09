@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#8d66e8">
+<meta name="theme-color" content="#8b5cf6">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Sakhi Magic Learning">
-<meta name="sakhi-build" content="2026.09.08-v2">
+<meta name="sakhi-build" content="2026.09.09-v2.1">
+<meta name="description" content="Sakhi Magic Learning — a magical, adaptive learning adventure for early readers, thinkers and explorers.">
 <title>Sakhi Magic Learning</title>
-<link rel="manifest" href="./manifest.json?v=20260908v2">
-<link rel="apple-touch-icon" href="./assets/sakhi-icon-180.png?v=20260908v2">
-<link rel="stylesheet" href="./sakhi-v2.css?v=20260908v2">
+<link rel="manifest" href="./manifest.json?v=20260909v21">
+<link rel="apple-touch-icon" href="./unicorn-icon.svg">
+<link rel="stylesheet" href="./sakhi-v2.css?v=20260909v21">
 </head>
 <body>
 <div id="updateBanner" class="update-banner hidden" role="status">
@@ -98,7 +99,7 @@
       <div><span class="adult-badge">ADULT AREA</span><h1>Parent Dashboard</h1><p>Understand the learning plan in seconds, then let Sakhi do the teaching.</p></div>
       <button id="lockParent" class="ghost-btn">🔒 Lock</button>
     </header>
-    <nav class="parent-tabs" id="parentTabs" aria-label="Parent sections">
+    <nav class="parent-tabs" id="parentTabs" aria-label="Parent dashboard sections">
       <button data-parent-tab="overview" class="active">Overview</button>
       <button data-parent-tab="progress">Progress</button>
       <button data-parent-tab="path">Learning Path</button>
@@ -107,24 +108,12 @@
       <button data-parent-tab="settings">Settings</button>
     </nav>
 
-    <section class="parent-panel active" data-parent-panel="overview">
-      <div id="parentOverview"></div>
-    </section>
-    <section class="parent-panel" data-parent-panel="progress" hidden>
-      <div id="parentProgress"></div>
-    </section>
-    <section class="parent-panel" data-parent-panel="path" hidden>
-      <div id="parentPath"></div>
-    </section>
-    <section class="parent-panel" data-parent-panel="reports" hidden>
-      <div id="parentReports"></div>
-    </section>
-    <section class="parent-panel" data-parent-panel="curriculum" hidden>
-      <div id="parentCurriculum"></div>
-    </section>
-    <section class="parent-panel" data-parent-panel="settings" hidden>
-      <div id="parentSettings"></div>
-    </section>
+    <section class="parent-panel active" data-parent-panel="overview"><div id="parentOverview"></div></section>
+    <section class="parent-panel" data-parent-panel="progress" hidden><div id="parentProgress"></div></section>
+    <section class="parent-panel" data-parent-panel="path" hidden><div id="parentPath"></div></section>
+    <section class="parent-panel" data-parent-panel="reports" hidden><div id="parentReports"></div></section>
+    <section class="parent-panel" data-parent-panel="curriculum" hidden><div id="parentCurriculum"></div></section>
+    <section class="parent-panel" data-parent-panel="settings" hidden><div id="parentSettings"></div></section>
   </section>
 </main>
 
@@ -138,7 +127,7 @@
 <div id="toast" class="toast" role="status"></div>
 <audio id="sakhiAudio" preload="auto" playsinline></audio>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-config.js?v=20260908v2"></script>
-<script src="./sakhi-v2.js?v=20260908v2"></script>
+<script src="./supabase-config.js?v=20260909v21"></script>
+<script src="./sakhi-v2.js?v=20260909v21"></script>
 </body>
 </html>
