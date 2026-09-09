@@ -1,0 +1,14 @@
+const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const cp=require('node:child_process');
+const html=fs.readFileSync('index.html','utf8');const js=fs.readFileSync('sakhi-v3.js','utf8');const css=fs.readFileSync('sakhi-v3.css','utf8');const sw=fs.readFileSync('sw.js','utf8');
+test('V3 is the only live runtime',()=>{assert.match(html,/sakhi-v3\.js/);assert.doesNotMatch(html,/sakhi-v2\.js|presentation-theme\.js|app\.js/)});
+test('V3 JavaScript parses',()=>{cp.execFileSync(process.execPath,['--check','sakhi-v3.js'])});
+test('all six magical learning worlds exist',()=>{for(const x of ['Unicorn Rainbow Meadow','Royal Castle Academy','Ice Princess Palace','Mermaid Lagoon','Enchanted Forest Friends','Pixie Art Garden'])assert.match(js,new RegExp(x))});
+test('history migration is preserved',()=>{assert.match(js,/sakhi\.v2\.state/);assert.match(js,/rainbowMagicLearningV2/);assert.match(js,/sakhi\.v3\.backup/)});
+test('daily journey advances to next activity then rewards',()=>{assert.match(js,/state\.currentIndex\+1/);assert.match(js,/showRewardsAfterSession/);assert.match(js,/autoAdvance/)});
+test('phonemes use pinned recorded audio',()=>{assert.match(js,/mitmedialab\/word-tree/);assert.match(js,/T\.wav/);assert.match(js,/P\.wav/);assert.match(js,/A-short\.wav/)});
+test('audio has one owner and aborts overlap',()=>{assert.match(js,/function stopAudio/);assert.match(js,/audioAbort\?\.abort/);assert.match(js,/unlockAudio/)});
+test('Supabase authoritative completion RPC is wired',()=>{assert.match(js,/complete_learning_activity_v2/);assert.match(js,/start_learning_session/);assert.match(js,/complete_learning_session/);assert.match(js,/award_session_reward_v2/)});
+test('Parent view explains goal why next and history',()=>{for(const id of ['todayGoal','whyToday','whatNext','historyList','domainProgress'])assert.match(html,new RegExp(`id="${id}"`))});
+test('Bedtime story flow exists',()=>{assert.match(js,/function bedtimeStory/);assert.match(html,/id="bedtimeBtn"/);assert.match(html,/id="readStory"/)});
+test('PWA update flow targets V3 cache',()=>{assert.match(sw,/sakhi-v3/);assert.match(js,/SKIP_WAITING/);assert.match(html,/Refresh now/)});
+test('child activity is a dedicated page view',()=>{assert.match(html,/data-view="activity"/);assert.match(css,/\.activity-view/);assert.match(js,/setView\('activity'\)/)});
