@@ -2,7 +2,7 @@ name: Validate Learning App
 
 on:
   push:
-    branches: [main]
+    branches: [main, sakhi-production-v3]
   workflow_dispatch:
 
 permissions:
@@ -16,9 +16,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check live runtime syntax
-        run: |
-          node --check sakhi-v2.js
-          node --check presentation-theme.js
-      - name: Run live V2 regression suite
-        run: node --test tests/v2.test.cjs
+      - name: Check Sakhi V3 runtime syntax
+        run: node --check sakhi-v3.js
+      - name: Run Sakhi V3 production regression suite
+        run: node --test tests/v3.test.cjs
