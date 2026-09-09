@@ -1,6 +1,6 @@
 const BUILD='2026.09.09-v3.0';
 const CACHE=`sakhi-v3-${BUILD}`;
-const CORE=['./','./index.html','./sakhi-v3.css?v=20260909v30','./sakhi-v3.js?v=20260909v30','./supabase-config.js?v=20260909v30','./manifest.json?v=20260909v30','./unicorn-icon.svg','./assets/magic/reading-unicorn.svg','./assets/magic/math-princess.svg','./assets/magic/logic-fairy.svg','./assets/magic/science-mermaid.svg','./assets/magic/story-princess.svg','./assets/magic/writing-princess.svg','./assets/sakhi-storybook-atlas-v2.webp'];
+const CORE=['./','./index.html','./sakhi-v3.css?v=20260909v30','./cloud-auth-v3.css?v=20260909v30','./sakhi-v3.js?v=20260909v30','./cloud-auth-v3.js?v=20260909v30','./supabase-config.js?v=20260909v30','./manifest.json?v=20260909v30','./unicorn-icon.svg','./assets/magic/reading-unicorn.svg','./assets/magic/math-princess.svg','./assets/magic/logic-fairy.svg','./assets/magic/science-mermaid.svg','./assets/magic/story-princess.svg','./assets/magic/writing-princess.svg','./assets/sakhi-storybook-atlas-v2.webp'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE))));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
 self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('sakhi-')&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim()})()));
