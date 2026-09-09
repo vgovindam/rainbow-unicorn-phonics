@@ -17,6 +17,8 @@ jobs:
         with:
           node-version: '22'
       - name: Check consolidated runtime syntax
-        run: node --check sakhi-v2.js
+        run: |
+          node --check sakhi-v2.js
+          node --check presentation-theme.js
       - name: Run V2 regression tests
         run: node --test tests/v2.test.cjs
