@@ -1,0 +1,24 @@
+name: Validate Sakhi V2
+
+on:
+  push:
+    branches: [sakhi-v2-stabilization]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-v2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check consolidated runtime syntax
+        run: |
+          node --check sakhi-v2.js
+          node --check presentation-theme.js
+      - name: Run V2 regression tests
+        run: node --test tests/v2.test.cjs
