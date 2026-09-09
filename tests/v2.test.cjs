@@ -8,7 +8,9 @@ const read=f=>fs.readFileSync(path.join(root,f),'utf8');
 test('v2 shell loads only the consolidated runtime',()=>{
   const html=read('index.html');
   assert.match(html,/sakhi-v2\.css/);
+  assert.match(html,/presentation-theme\.css/);
   assert.match(html,/sakhi-v2\.js/);
+  assert.match(html,/presentation-theme\.js/);
   assert.doesNotMatch(html,/interaction-engine\.js|visuals\.js|adaptive-engine\.js|app\.js/);
 });
 
@@ -25,11 +27,26 @@ test('v2 uses crisp vector scenes instead of the raster storybook atlas',()=>{
   assert.doesNotMatch(js,/sakhi-storybook-atlas|phonics-ms-atlas/);
 });
 
-test('magical typography has separate display and readable UI fonts',()=>{
-  const css=read('sakhi-v2.css');
-  assert.match(css,/Berkshire\+Swash/);
-  assert.match(css,/Fredoka/);
-  assert.match(css,/Nunito/);
+test('magical typography is limited while child-facing text stays readable',()=>{
+  const base=read('sakhi-v2.css'),theme=read('presentation-theme.css');
+  assert.match(base,/Berkshire\+Swash/);
+  assert.match(base,/Fredoka/);
+  assert.match(base,/Nunito/);
+  assert.match(theme,/--brand-display:'Berkshire Swash'/);
+  assert.match(theme,/--kid-display:'Fredoka'/);
+  assert.match(theme,/\.hero-copy h1[\s\S]*font-family:var\(--kid-display\)/);
+  assert.match(theme,/\.brand b\{font-family:var\(--brand-display\)/);
+});
+
+test('princess and unicorn guide system is present and vector based',()=>{
+  const html=read('index.html'),theme=read('presentation-theme.js');
+  assert.match(html,/magicGuideStrip/);
+  assert.match(html,/Princess \+ Unicorn learning magic/);
+  assert.match(theme,/Sakhi Unicorn/);
+  assert.match(theme,/Gem Princess/);
+  assert.match(theme,/Book Princess/);
+  assert.match(theme,/Coral Mermaid/);
+  assert.match(theme,/<svg/);
 });
 
 test('audio has one reusable player and overlap cancellation',()=>{
@@ -70,6 +87,8 @@ test('rewards are completion driven rather than manually toggled',()=>{
 test('PWA update flow waits for the user before skipWaiting',()=>{
   const sw=read('sw.js'),js=read('sakhi-v2.js');
   assert.match(sw,/SKIP_WAITING/);
+  assert.match(sw,/presentation-theme\.css/);
+  assert.match(sw,/presentation-theme\.js/);
   const installBody=sw.match(/self\.addEventListener\('install'[\s\S]*?\n\}\);/)?.[0]||'';
   assert.doesNotMatch(installBody,/skipWaiting\(\)/);
   assert.match(js,/showUpdate/);
