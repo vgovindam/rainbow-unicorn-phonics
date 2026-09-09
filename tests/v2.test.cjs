@@ -56,7 +56,7 @@ test('parent overview leads with goal, why and next',()=>{
 
 test('current curriculum declares 48 implemented skills',()=>{
   const js=read('sakhi-v2.js');
-  const ids=[...js.matchAll(/\['((?:reading|math|language|logic|science|writing)\.[a-z_]+)'\s*,\s*'(?:reading|math|language|logic|science|writing)'/g)].map(x=>x[1]);
+  const ids=[...js.matchAll(/\['((?:reading|math|language|logic|science|writing)\.[a-z0-9_]+)'\s*,\s*'(?:reading|math|language|logic|science|writing)'/g)].map(x=>x[1]);
   assert.equal(new Set(ids).size,48);
   for(const id of new Set(ids))assert.ok(js.includes(`case'${id}'`),`missing activity factory for ${id}`);
 });
@@ -70,7 +70,8 @@ test('rewards are completion driven rather than manually toggled',()=>{
 test('PWA update flow waits for the user before skipWaiting',()=>{
   const sw=read('sw.js'),js=read('sakhi-v2.js');
   assert.match(sw,/SKIP_WAITING/);
-  assert.doesNotMatch(sw,/install[\s\S]{0,250}skipWaiting\(\)/);
-  assert.match(js,/A new Sakhi version|showUpdate/);
+  const installBody=sw.match(/self\.addEventListener\('install'[\s\S]*?\n\}\);/)?.[0]||'';
+  assert.doesNotMatch(installBody,/skipWaiting\(\)/);
+  assert.match(js,/showUpdate/);
   assert.match(js,/postMessage\(\{type:'SKIP_WAITING'\}\)/);
 });
